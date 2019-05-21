@@ -216,6 +216,8 @@ func main() {
 	http.HandleFunc(common.WebsocketControllerEndpoint, controller)
 	http.HandleFunc(common.WebsocketControllerSubscriptionEndpoint, controllerSubscription)
 
+	http.HandleFunc(common.WebsocketImageEndpoint, image)
+
 	log.Println("Start HTTP Server")
 	httpAddr := fmt.Sprintf("0.0.0.0:%v", common.DefaultHttpPort)
 	if err := http.ListenAndServe(httpAddr, nil); err != nil {
