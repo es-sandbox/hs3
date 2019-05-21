@@ -27,6 +27,9 @@ func (db *db) getAllEnvironmentInfoRecords() ([]*message.EnvironmentInfo, error)
 	msgs := make([]*message.EnvironmentInfo, 0)
 	err := db.boltDb.View(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket(environmentInfoBucketName)
+		if bucket == nil {
+			return nil
+		}
 
 		return bucket.ForEach(func(key, value []byte) error {
 			envInvo, err := message.NewEnvironmentInfoFromBytes(value)
@@ -66,6 +69,9 @@ func (db *db) getAllHumanHeartInfoRecords() ([]*message.HumanHeartInfo, error) {
 	msgs := make([]*message.HumanHeartInfo, 0)
 	err := db.boltDb.View(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket(humanHeartInfoBucketName)
+		if bucket == nil {
+			return nil
+		}
 
 		return bucket.ForEach(func(key, value []byte) error {
 			hhInfo, err := message.NewHumanHeartInfoFromBytes(value)
@@ -105,6 +111,9 @@ func (db *db) getAllHumanCommonInfoRecords() ([]*message.HumanCommonInfo, error)
 	msgs := make([]*message.HumanCommonInfo, 0)
 	err := db.boltDb.View(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket(humanCommonInfoBucketName)
+		if bucket == nil {
+			return nil
+		}
 
 		return bucket.ForEach(func(key, value []byte) error {
 			hcInfo, err := message.NewHumanCommonInfoFromBytes(value)
@@ -144,6 +153,9 @@ func (db *db) getAllFlowerpotInfoRecords() ([]*message.FlowerpotInfo, error) {
 	msgs := make([]*message.FlowerpotInfo, 0)
 	err := db.boltDb.View(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket(flowerpotInfoBucketName)
+		if bucket == nil {
+			return nil
+		}
 
 		return bucket.ForEach(func(key, value []byte) error {
 			fpInfo, err := message.NewFlowerpotInfoFromBytes(value)
