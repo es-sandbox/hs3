@@ -31,7 +31,6 @@ func echo(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// var tsl *threadSafeList
 const chanMsgsSize = 200
 var chanMsgs = make(chan string, chanMsgsSize)
 
@@ -43,7 +42,6 @@ func controller(w http.ResponseWriter, r *http.Request) {
 	}
 	defer c.Close()
 
-	// tsl = newThreadSafeList()
 
 	for {
 		mt, message, err := c.ReadMessage()
@@ -55,7 +53,6 @@ func controller(w http.ResponseWriter, r *http.Request) {
 
 		log.Printf("recv: %s", message)
 
-		// tsl.pushBack(string(message))
 		chanMsgs <- string(message)
 	}
 }
