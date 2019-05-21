@@ -24,7 +24,6 @@ func main() {
 	wsFlag := flag.Bool("ws", false, "")
 	wsControllerFlag := flag.Bool("ws_ctrl", false, "")
 	wsControllerSubscriptionFlag := flag.Bool("ws_ctrl_sub", false, "")
-	wsImageFlag := flag.Bool("image", false, "")
 
 	flag.Parse()
 
@@ -70,10 +69,6 @@ func main() {
 
 	if *wsControllerSubscriptionFlag {
 		wsControllerSubscription()
-	}
-
-	if *wsImageFlag {
-		wsImage()
 	}
 }
 
@@ -158,31 +153,5 @@ func wsControllerSubscription() {
 			return
 		}
 		log.Printf("recv: %s", message)
-	}
-}
-
-func wsImage() {
-	host := fmt.Sprintf("localhost:%v", common.DefaultHttpPort)
-	u := url.URL{
-		Scheme: "ws",
-		Host:   host,
-		Path:   common.WebsocketImageEndpoint,
-	}
-	log.Printf("connecting to %s", u.String())
-
-	c, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
-	if err != nil {
-		log.Fatal("dial:", err)
-	}
-	defer c.Close()
-
-	for i := 0;; i++ {
-		err := c.WriteMessage(websocket.TextMessage, []byte(fmt.Sprintf("msg_%v", i)))
-		if err != nil {
-			log.Println("write:", err)
-			return
-		}
-
-		time.Sleep(time.Second)
 	}
 }
