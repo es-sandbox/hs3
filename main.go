@@ -214,6 +214,7 @@ func main() {
 
 	http.HandleFunc("/echo", echo)
 	http.HandleFunc("/controller", controller)
+	http.HandleFunc("/controller/subscribe", controllerSubscription)
 
 	log.Println("Start HTTP Server")
 	httpAddr := fmt.Sprintf("0.0.0.0:%v", common.DefaultHttpPort)

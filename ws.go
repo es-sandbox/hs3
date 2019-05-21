@@ -31,6 +31,9 @@ func echo(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// var tsl *threadSafeList
+var chanMsgs = make(chan string, 0)
+
 func controller(w http.ResponseWriter, r *http.Request) {
 	c, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -38,6 +41,8 @@ func controller(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer c.Close()
+
+	// tsl = newThreadSafeList()
 
 	for {
 		mt, message, err := c.ReadMessage()
@@ -48,6 +53,27 @@ func controller(w http.ResponseWriter, r *http.Request) {
 		_ = mt
 
 		log.Printf("recv: %s", message)
+
+		// tsl.pushBack(string(message))
+		chanMsgs <- string(message)
+	}
+}
+
+func controllerSubscription(w http.ResponseWriter, r *http.Request) {
+	c, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		log.Print("upgrade:", err)
+		return
+	}
+	defer c.Close()
+
+	for {
+		msg := <- chanMsgs
+		err = c.WriteMessage(websocket.TextMessage, []byte(msg))
+		if err != nil {
+			log.Println("write:", err)
+			break
+		}
 	}
 }
 
