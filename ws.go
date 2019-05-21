@@ -45,18 +45,28 @@ func controller(w http.ResponseWriter, r *http.Request) {
 	}
 	defer c.Close()
 
+	go func() {
+		for {
+			mt, message, err := c.ReadMessage()
+			if err != nil {
+				log.Println("read:", err)
+				break
+			}
+			_ = mt
+
+			log.Printf("recv: %s", message)
+
+			chanCtrlMsgs <- string(message)
+		}
+	}()
 
 	for {
-		mt, message, err := c.ReadMessage()
+		msg := <-chanImageMsgs
+		err = c.WriteMessage(websocket.TextMessage, []byte(msg))
 		if err != nil {
-			log.Println("read:", err)
+			log.Println("write:", err)
 			break
 		}
-		_ = mt
-
-		log.Printf("recv: %s", message)
-
-		chanCtrlMsgs <- string(message)
 	}
 }
 

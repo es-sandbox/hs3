@@ -120,14 +120,25 @@ func wsController() {
 	}
 	defer c.Close()
 
-	for i := 0;; i++ {
-		err := c.WriteMessage(websocket.TextMessage, []byte(fmt.Sprintf("ctrl_%v", i)))
+	go func() {
+		for i := 0;; i++ {
+			err := c.WriteMessage(websocket.TextMessage, []byte(fmt.Sprintf("ctrl_%v", i)))
+			if err != nil {
+				log.Println("write:", err)
+				return
+			}
+
+			time.Sleep(time.Second)
+		}
+	}()
+
+	for {
+		_, message, err := c.ReadMessage()
 		if err != nil {
-			log.Println("write:", err)
+			log.Println("read:", err)
 			return
 		}
-
-		time.Sleep(time.Second)
+		log.Printf("recv: %s", message)
 	}
 }
 
