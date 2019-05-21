@@ -32,7 +32,8 @@ func echo(w http.ResponseWriter, r *http.Request) {
 }
 
 // var tsl *threadSafeList
-var chanMsgs = make(chan string, 0)
+const chanMsgsSize = 200
+var chanMsgs = make(chan string, chanMsgsSize)
 
 func controller(w http.ResponseWriter, r *http.Request) {
 	c, err := upgrader.Upgrade(w, r, nil)

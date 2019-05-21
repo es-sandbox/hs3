@@ -22,6 +22,8 @@ func main() {
 	getFp := flag.Bool("getfp", false, "")
 	fp := flag.Bool("fp", false, "")
 	wsFlag := flag.Bool("ws", false, "")
+	wsControllerFlag := flag.Bool("ws_ctrl", false, "")
+	wsControllerSubscriptionFlag := flag.Bool("ws_ctrl_sub", false, "")
 
 	flag.Parse()
 
@@ -60,6 +62,14 @@ func main() {
 	if *wsFlag {
 		ws()
 	}
+
+	if *wsControllerFlag {
+		wsController()
+	}
+
+	if *wsControllerSubscriptionFlag {
+		wsControllerSubscription()
+	}
 }
 
 func ws() {
@@ -67,7 +77,7 @@ func ws() {
 	u := url.URL{
 		Scheme: "ws",
 		Host:   host,
-		Path:   "/echo",
+		Path:   common.WebsocketEchoEndpoint,
 	}
 	log.Printf("connecting to %s", u.String())
 
@@ -84,6 +94,59 @@ func ws() {
 			return
 		}
 
+		_, message, err := c.ReadMessage()
+		if err != nil {
+			log.Println("read:", err)
+			return
+		}
+		log.Printf("recv: %s", message)
+
+		time.Sleep(time.Second)
+	}
+}
+
+func wsController() {
+	host := fmt.Sprintf("localhost:%v", common.DefaultHttpPort)
+	u := url.URL{
+		Scheme: "ws",
+		Host:   host,
+		Path:   common.WebsocketControllerEndpoint,
+	}
+	log.Printf("connecting to %s", u.String())
+
+	c, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
+	if err != nil {
+		log.Fatal("dial:", err)
+	}
+	defer c.Close()
+
+	for {
+		err := c.WriteMessage(websocket.TextMessage, []byte("Hello world!"))
+		if err != nil {
+			log.Println("write:", err)
+			return
+		}
+
+		time.Sleep(time.Second)
+	}
+}
+
+func wsControllerSubscription() {
+	host := fmt.Sprintf("localhost:%v", common.DefaultHttpPort)
+	u := url.URL{
+		Scheme: "ws",
+		Host:   host,
+		Path:   common.WebsocketControllerSubscriptionEndpoint,
+	}
+	log.Printf("connecting to %s", u.String())
+
+	c, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
+	if err != nil {
+		log.Fatal("dial:", err)
+	}
+	defer c.Close()
+
+	for {
 		_, message, err := c.ReadMessage()
 		if err != nil {
 			log.Println("read:", err)

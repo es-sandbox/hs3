@@ -212,9 +212,9 @@ func main() {
 		}
 	})
 
-	http.HandleFunc("/echo", echo)
-	http.HandleFunc("/controller", controller)
-	http.HandleFunc("/controller/subscribe", controllerSubscription)
+	http.HandleFunc(common.WebsocketEchoEndpoint, echo)
+	http.HandleFunc(common.WebsocketControllerEndpoint, controller)
+	http.HandleFunc(common.WebsocketControllerSubscriptionEndpoint, controllerSubscription)
 
 	log.Println("Start HTTP Server")
 	httpAddr := fmt.Sprintf("0.0.0.0:%v", common.DefaultHttpPort)
