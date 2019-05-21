@@ -11,4 +11,7 @@ const (
 	WebsocketEchoEndpoint                   = "/echo"
 	WebsocketControllerEndpoint             = "/controller"
 	WebsocketControllerSubscriptionEndpoint = "/controller/subscribe"
+
+	WebsocketImageEndpoint             = "/image"
+	WebsocketImageSubscriptionEndpoint = "/image/subscribe"
 )
