@@ -146,12 +146,24 @@ func wsControllerSubscription() {
 	}
 	defer c.Close()
 
-	for {
-		_, message, err := c.ReadMessage()
+	go func () {
+		for {
+			_, message, err := c.ReadMessage()
+			if err != nil {
+				log.Println("read:", err)
+				return
+			}
+			log.Printf("recv: %s", message)
+		}
+	}()
+
+	for i := 0;; i++ {
+		err := c.WriteMessage(websocket.TextMessage, []byte(fmt.Sprintf("image_%v", i)))
 		if err != nil {
-			log.Println("read:", err)
+			log.Println("write:", err)
 			return
 		}
-		log.Printf("recv: %s", message)
+
+		time.Sleep(time.Second)
 	}
 }
