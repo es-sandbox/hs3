@@ -34,6 +34,9 @@ func echo(w http.ResponseWriter, r *http.Request) {
 const chanCtrlMsgsSize = 200
 var chanCtrlMsgs = make(chan string, chanCtrlMsgsSize)
 
+const chanImageMsgsSize = 200
+var chanImageMsgs = make(chan string, chanImageMsgsSize)
+
 func controller(w http.ResponseWriter, r *http.Request) {
 	c, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -65,13 +68,28 @@ func controllerSubscription(w http.ResponseWriter, r *http.Request) {
 	}
 	defer c.Close()
 
+	go func() {
+		for {
+			msg := <-chanCtrlMsgs
+			err = c.WriteMessage(websocket.TextMessage, []byte(msg))
+			if err != nil {
+				log.Println("write:", err)
+				break
+			}
+		}
+	}()
+
 	for {
-		msg := <- chanCtrlMsgs
-		err = c.WriteMessage(websocket.TextMessage, []byte(msg))
+		mt, message, err := c.ReadMessage()
 		if err != nil {
-			log.Println("write:", err)
+			log.Println("read:", err)
 			break
 		}
+		_ = mt
+
+		log.Printf("recv: %s", message)
+
+		chanImageMsgs <- string(message)
 	}
 }
 
