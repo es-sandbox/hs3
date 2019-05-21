@@ -31,8 +31,8 @@ func echo(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-const chanMsgsSize = 200
-var chanMsgs = make(chan string, chanMsgsSize)
+const chanCtrlMsgsSize = 200
+var chanCtrlMsgs = make(chan string, chanCtrlMsgsSize)
 
 func controller(w http.ResponseWriter, r *http.Request) {
 	c, err := upgrader.Upgrade(w, r, nil)
@@ -53,7 +53,7 @@ func controller(w http.ResponseWriter, r *http.Request) {
 
 		log.Printf("recv: %s", message)
 
-		chanMsgs <- string(message)
+		chanCtrlMsgs <- string(message)
 	}
 }
 
@@ -66,7 +66,7 @@ func controllerSubscription(w http.ResponseWriter, r *http.Request) {
 	defer c.Close()
 
 	for {
-		msg := <- chanMsgs
+		msg := <- chanCtrlMsgs
 		err = c.WriteMessage(websocket.TextMessage, []byte(msg))
 		if err != nil {
 			log.Println("write:", err)
