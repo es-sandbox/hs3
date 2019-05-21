@@ -31,10 +31,17 @@ type FlowerpotInfo struct {
 }
 ```
 	
-## Calls
+## HTTP calls
 ```
 Get/Post /api/v1/environment
 Get/Post /api/v1/human/heart
 Get/Post /api/v1/human/common
 Get/Post /api/v1/flowerpot
+```
+
+## Websocket calls
+```
+WebsocketEchoEndpoint                   = "/echo"
+WebsocketControllerEndpoint             = "/controller"
+WebsocketControllerSubscriptionEndpoint = "/controller/subscribe"
 ```
