@@ -121,7 +121,7 @@ func wsController() {
 	defer c.Close()
 
 	for i := 0;; i++ {
-		err := c.WriteMessage(websocket.TextMessage, []byte(fmt.Sprintf("msg_%v", i)))
+		err := c.WriteMessage(websocket.TextMessage, []byte(fmt.Sprintf("ctrl_%v", i)))
 		if err != nil {
 			log.Println("write:", err)
 			return
