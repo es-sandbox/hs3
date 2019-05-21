@@ -120,8 +120,8 @@ func wsController() {
 	}
 	defer c.Close()
 
-	for {
-		err := c.WriteMessage(websocket.TextMessage, []byte("Hello world!"))
+	for i := 0;; i++ {
+		err := c.WriteMessage(websocket.TextMessage, []byte(fmt.Sprintf("msg_%v", i)))
 		if err != nil {
 			log.Println("write:", err)
 			return
@@ -153,7 +153,5 @@ func wsControllerSubscription() {
 			return
 		}
 		log.Printf("recv: %s", message)
-
-		time.Sleep(time.Second)
 	}
 }
