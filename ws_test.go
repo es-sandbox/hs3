@@ -16,6 +16,11 @@ func TestAndroidWriteRobotRead(t *testing.T) {
 	server := start()
 	defer server.shutdown()
 
+	const (
+		messagesNum = 10
+		messageText = "ctrl"
+	)
+
 	host := fmt.Sprintf("localhost:%v", common.DefaultHttpPort)
 	androidUrl := url.URL{
 		Scheme: "ws",
@@ -32,7 +37,7 @@ func TestAndroidWriteRobotRead(t *testing.T) {
 
 	go func() {
 		for i := 0;; i++ {
-			err := androidClient.WriteMessage(websocket.TextMessage, []byte("ctrl"))
+			err := androidClient.WriteMessage(websocket.TextMessage, []byte(messageText))
 			if err != nil && !strings.Contains(err.Error(), useClosedNetworkConnectionErrorMessage) {
 				log.Fatal(err)
 			}
@@ -52,7 +57,7 @@ func TestAndroidWriteRobotRead(t *testing.T) {
 	}
 	defer robotClient.Close()
 
-	done := make(chan string, 10)
+	done := make(chan string, messagesNum)
 	for i := 0; i < 10; i++ {
 		_, message, err := robotClient.ReadMessage()
 		if err != nil {
@@ -60,12 +65,10 @@ func TestAndroidWriteRobotRead(t *testing.T) {
 			return
 		}
 
-		_ = message
-
 		done <- string(message)
 	}
-	for i := 0; i < 10; i++ {
-		assert(compareStrings(string(<-done), "ctrl"))
+	for i := 0; i < messagesNum; i++ {
+		assert(compareStrings(string(<-done), messageText))
 	}
 }
 
