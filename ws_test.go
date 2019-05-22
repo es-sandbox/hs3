@@ -8,7 +8,6 @@ import (
 	"net/url"
 	"strings"
 	"testing"
-	"time"
 )
 
 const useClosedNetworkConnectionErrorMessage = "use of closed network connection"
@@ -37,7 +36,6 @@ func TestAndroidWriteRobotRead(t *testing.T) {
 			if err != nil && !strings.Contains(err.Error(), useClosedNetworkConnectionErrorMessage) {
 				log.Fatal(err)
 			}
-			time.Sleep(time.Second)
 		}
 	}()
 
@@ -53,8 +51,6 @@ func TestAndroidWriteRobotRead(t *testing.T) {
 		log.Fatal("dial:", err)
 	}
 	defer robotClient.Close()
-
-	log.Println("HERE")
 
 	done := make(chan string, 10)
 	for i := 0; i < 10; i++ {
