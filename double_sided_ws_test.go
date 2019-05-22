@@ -73,7 +73,11 @@ func TestDoubleSidedWs(t *testing.T) {
 		done <- string(message)
 	}
 	// ----------------------------------------------------------------------------------------------------
-
+	//
+	//
+	// USE DONE CHANNELS AS INTERMEDIARY BETWEEN ROBOT AND VERIFICATION
+	//
+	//
 	// ------------------------------ VERIFY ROBOT RECEIVED MESSAGES ------------------------------
 	for i := 0; i < messagesNum; i++ {
 		assert(compareStrings(string(<-done), messageText))
