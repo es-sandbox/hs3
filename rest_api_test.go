@@ -76,6 +76,18 @@ func TestFlowerpotInfoInfoEndpoint(t *testing.T) {
 	assert(compareFpObjects(obj, &expected))
 }
 
+func TestRobotModeEndpoint(t *testing.T) {
+	removeDBFile()
+	server := start()
+	defer server.shutdown()
+
+	common.Mode()
+	obj := common.GetMode()
+
+	expected := common.DefaultRobotMode
+	assert(compareRobotModeObjects(obj, &expected))
+}
+
 func removeDBFile() {
 	if err := os.Remove("my.db"); err != nil && !strings.Contains(err.Error(), "no such file or directory") {
 		log.Fatal(err)
@@ -145,4 +157,9 @@ func compareFpObjects(actual, expected *message.FlowerpotInfo) bool {
 	ok2 := actual.PouredOn == expected.PouredOn
 	ok3 := actual.Humidity == expected.Humidity
 	return ok1 && ok2 && ok3
+}
+
+func compareRobotModeObjects(actual, expected *message.RobotMode) bool {
+	ok1 := actual.Mode == expected.Mode
+	return ok1
 }
