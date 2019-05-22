@@ -21,6 +21,10 @@ func main() {
 	hc := flag.Bool("hc", false, "")
 	getFp := flag.Bool("getfp", false, "")
 	fp := flag.Bool("fp", false, "")
+
+	getMode := flag.Bool("getmode", false, "")
+	mode := flag.Bool("mode", false, "")
+
 	wsFlag := flag.Bool("ws", false, "")
 	wsControllerFlag := flag.Bool("ws_ctrl", false, "")
 	wsControllerSubscriptionFlag := flag.Bool("ws_ctrl_sub", false, "")
@@ -57,6 +61,14 @@ func main() {
 
 	if *fp {
 		common.Fp()
+	}
+
+	if *getMode {
+		fmt.Println(common.GetMode())
+	}
+
+	if *mode {
+		common.Mode()
 	}
 
 	if *wsFlag {

@@ -36,6 +36,9 @@ var (
 		PouredOn: false,
 		Humidity: 1,
 	}
+	DefaultRobotMode = message.RobotMode{
+		Mode: 1,
+	}
 )
 
 func PrintEnv() {
@@ -186,6 +189,38 @@ func Fp() {
 	rawBuff := bytes.NewReader(raw)
 
 	url := fmt.Sprintf("http://localhost:%v%v", DefaultHttpPort, PutFlowerpotInfoEndpoint)
+	contentType := "application/json"
+	if _, err := http.Post(url, contentType, rawBuff); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func GetMode() *message.RobotMode {
+	url := fmt.Sprintf("http://localhost:%v%v", DefaultHttpPort, PutRobotModeEndpoint)
+	fmt.Println(url)
+	resp, err := http.Get(url)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	raw, err := ioutil.ReadAll(resp.Body)
+
+	var result message.RobotMode
+	if err := json.Unmarshal(raw, &result); err != nil {
+		log.Fatal(err)
+	}
+
+	return &result
+}
+
+func Mode() {
+	raw, err := json.Marshal(DefaultRobotMode)
+	if err != nil {
+		log.Fatal(err)
+	}
+	rawBuff := bytes.NewReader(raw)
+
+	url := fmt.Sprintf("http://localhost:%v%v", DefaultHttpPort, PutRobotModeEndpoint)
 	contentType := "application/json"
 	if _, err := http.Post(url, contentType, rawBuff); err != nil {
 		log.Fatal(err)

@@ -11,6 +11,9 @@ var (
 	humanHeartInfoBucketName  = []byte("human/heart")
 	humanCommonInfoBucketName = []byte("human/common")
 	flowerpotInfoBucketName   = []byte("flowerpot")
+	metaInfoBucketName        = []byte("meta")
+
+	robotModeKey = []byte("mode")
 )
 
 type db struct {
@@ -188,5 +191,42 @@ func (db *db) putFlowerpotInfo(flowerpotInfo *message.FlowerpotInfo) error {
 		}
 
 		return bucket.Put(itob(flowerpotInfo.Id), rawToDatabase)
+	})
+}
+
+func (db *db) getRobotMode() (*message.RobotMode, error) {
+	var mode *message.RobotMode
+	err := db.boltDb.View(func(tx *bolt.Tx) error {
+		bucket := tx.Bucket(metaInfoBucketName)
+		if bucket == nil {
+			return nil
+		}
+
+		var (
+			err error
+			raw = bucket.Get(robotModeKey)
+		)
+		mode, err = message.NewRobotModeFromBytes(raw)
+		return err
+	})
+	if err != nil {
+		return nil, err
+	}
+	return mode, nil
+}
+
+func (db *db) putRobotMode(mode *message.RobotMode) error {
+	return db.boltDb.Update(func(tx *bolt.Tx) error {
+		bucket, err := tx.CreateBucketIfNotExists(metaInfoBucketName)
+		if err != nil {
+			return err
+		}
+
+		rawToDatabase, err := mode.Encode()
+		if err != nil {
+			return err
+		}
+
+		return bucket.Put(robotModeKey, rawToDatabase)
 	})
 }

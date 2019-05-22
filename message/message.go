@@ -79,6 +79,22 @@ func NewFlowerpotInfoFromBytes(bytes []byte) (*FlowerpotInfo, error) {
 	return &fpInfo, nil
 }
 
+type RobotMode struct {
+	Mode uint8
+}
+
+func (mode *RobotMode) Encode() ([]byte, error) {
+	return json.Marshal(mode)
+}
+
+func NewRobotModeFromBytes(bytes []byte) (*RobotMode, error) {
+	var mode RobotMode
+	if err := json.Unmarshal(bytes, &mode); err != nil {
+		return nil, err
+	}
+	return &mode, nil
+}
+
 type Image struct {
 	Raw []byte
 }
