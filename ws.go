@@ -41,10 +41,25 @@ const chanImageMsgsSize = 200
 
 var chanImageMsgs = make(chan string, chanImageMsgsSize)
 
+const (
+	RobotConnected    = "connected"
+	RobotDisconnected = "disconnected"
+)
+
+var chanRobotStatusEvents = make(chan string, 200)
+
 var (
 	controllerStatus             uint32
 	controllerSubscriptionStatus uint32
 )
+
+func androidIsActive() bool {
+	return atomic.LoadUint32(&controllerStatus) == 1
+}
+
+func robotIsActive() bool {
+	return atomic.LoadUint32(&controllerSubscriptionStatus) == 1
+}
 
 func controller(w http.ResponseWriter, r *http.Request) {
 	c, err := upgrader.Upgrade(w, r, nil)
@@ -75,11 +90,18 @@ func controller(w http.ResponseWriter, r *http.Request) {
 	}()
 
 	for {
-		msg := <-chanImageMsgs
-		err = c.WriteMessage(websocket.TextMessage, []byte(msg))
-		if err != nil {
-			log.Println("write:", err)
-			break
+		select {
+		case msg := <-chanImageMsgs:
+			err = c.WriteMessage(websocket.TextMessage, []byte(msg))
+			if err != nil {
+				log.Println("write:", err)
+				continue
+			}
+		case event := <-chanRobotStatusEvents:
+			if err := c.WriteMessage(websocket.TextMessage, []byte(event)); err != nil {
+				log.Println("write:", err)
+				continue
+			}
 		}
 	}
 }
@@ -93,7 +115,16 @@ func controllerSubscription(w http.ResponseWriter, r *http.Request) {
 	defer c.Close()
 
 	atomic.StoreUint32(&controllerSubscriptionStatus, 1)
-	defer atomic.StoreUint32(&controllerSubscriptionStatus, 0)
+	if androidIsActive() {
+		chanRobotStatusEvents <- RobotConnected
+	}
+
+	defer func() {
+		atomic.StoreUint32(&controllerSubscriptionStatus, 0)
+		if androidIsActive() {
+			chanRobotStatusEvents <- RobotDisconnected
+		}
+	}()
 
 	go func() {
 		for {
@@ -122,14 +153,20 @@ func controllerSubscription(w http.ResponseWriter, r *http.Request) {
 			chanImageMsgs <- string(message)
 		}
 
+		if string(message) == RobotConnected || string(message) == RobotDisconnected {
+			continue
+		}
+
 		// save images in server's filesystem always (even android is inactive)
 		rawImage, err := base64.StdEncoding.DecodeString(string(message))
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
+			continue
 		}
 
 		if err := ioutil.WriteFile("images/final.jpg", rawImage, 0666); err != nil {
 			log.Printf("can't save image in server's filesystem: %v\n", err)
+			continue
 		}
 	}
 }
