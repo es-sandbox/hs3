@@ -72,6 +72,14 @@ func controller(w http.ResponseWriter, r *http.Request) {
 	atomic.StoreUint32(&controllerStatus, 1)
 	defer atomic.StoreUint32(&controllerStatus, 0)
 
+	msg := RobotDisconnected
+	if robotIsActive() {
+		msg = RobotConnected
+	}
+	if err = c.WriteMessage(websocket.TextMessage, []byte(msg)); err != nil {
+		log.Println("write:", err)
+	}
+
 	go func() {
 		for {
 			mt, message, err := c.ReadMessage()
