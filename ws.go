@@ -1,10 +1,10 @@
 package main
 
 import (
+	"github.com/gorilla/websocket"
 	"log"
 	"net/http"
-
-	"github.com/gorilla/websocket"
+	"sync/atomic"
 )
 
 var upgrader = websocket.Upgrader{} // use default options
@@ -32,10 +32,17 @@ func echo(w http.ResponseWriter, r *http.Request) {
 }
 
 const chanCtrlMsgsSize = 200
+
 var chanCtrlMsgs = make(chan string, chanCtrlMsgsSize)
 
 const chanImageMsgsSize = 200
+
 var chanImageMsgs = make(chan string, chanImageMsgsSize)
+
+var (
+	controllerStatus             uint32
+	controllerSubscriptionStatus uint32
+)
 
 func controller(w http.ResponseWriter, r *http.Request) {
 	c, err := upgrader.Upgrade(w, r, nil)
@@ -44,6 +51,9 @@ func controller(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer c.Close()
+
+	atomic.StoreUint32(&controllerStatus, 1)
+	defer atomic.StoreUint32(&controllerStatus, 0)
 
 	go func() {
 		for {
@@ -78,6 +88,9 @@ func controllerSubscription(w http.ResponseWriter, r *http.Request) {
 	}
 	defer c.Close()
 
+	//atomic.StoreUint32(&controllerSubscriptionStatus, 1)
+	//defer atomic.StoreUint32(&controllerSubscriptionStatus, 0)
+
 	go func() {
 		for {
 			msg := <-chanCtrlMsgs
@@ -99,7 +112,10 @@ func controllerSubscription(w http.ResponseWriter, r *http.Request) {
 
 		log.Printf("recv: %s", message)
 
-		chanImageMsgs <- string(message)
+		if atomic.LoadUint32(&controllerStatus) == 1 {
+			log.Println("android is active so pass to chanImageMsgs")
+			chanImageMsgs <- string(message)
+		}
 	}
 }
 

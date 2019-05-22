@@ -155,7 +155,7 @@ func wsController() {
 }
 
 func wsControllerSubscription() {
-	host := fmt.Sprintf("35.159.53.201:%v", common.DefaultHttpPort)
+	host := fmt.Sprintf("localhost:%v", common.DefaultHttpPort)
 	u := url.URL{
 		Scheme: "ws",
 		Host:   host,
