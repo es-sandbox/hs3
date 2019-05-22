@@ -105,13 +105,13 @@ func controller(w http.ResponseWriter, r *http.Request) {
 			err = c.WriteMessage(websocket.TextMessage, []byte(msg))
 			if err != nil {
 				log.Println("write:", err)
-				continue
+				break
 			}
 		case event := <-chanRobotStatusEvents:
 			log.Printf("WRITE TO ANDROID %v", event)
 			if err := c.WriteMessage(websocket.TextMessage, []byte(event)); err != nil {
 				log.Println("write:", err)
-				continue
+				break
 			}
 		}
 	}
