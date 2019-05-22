@@ -167,8 +167,6 @@ func TestAndroidReadRobotWrite(t *testing.T) {
 				//log.Fatal(err)
 				return
 			}
-
-			time.Sleep(time.Second)
 		}
 	}()
 
