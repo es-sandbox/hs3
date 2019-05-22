@@ -129,7 +129,6 @@ func TestAndroidReadRobotWrite(t *testing.T) {
 			err := robotClient.WriteMessage(websocket.TextMessage, []byte(messageText))
 			if err != nil && !strings.Contains(err.Error(), useClosedNetworkConnectionErrorMessage) {
 				log.Fatal(err)
-				return
 			}
 		}
 	}()
