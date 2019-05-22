@@ -64,8 +64,8 @@ func TestWs(t *testing.T) {
 
 	log.Println("HERE")
 
-	done := make(chan string, 1)
-	for {
+	done := make(chan string, 10)
+	for i := 0; i < 10; i++ {
 		_, message, err := robotClient.ReadMessage()
 		if err != nil {
 			log.Fatal(err)
@@ -75,9 +75,10 @@ func TestWs(t *testing.T) {
 		_ = message
 
 		done <- string(message)
-		break
 	}
-	assert(compareStrings(string(<-done), "ctrl"))
+	for i := 0; i < 10; i++ {
+		assert(compareStrings(string(<-done), "ctrl"))
+	}
 
 	log.Println("OK")
 }
