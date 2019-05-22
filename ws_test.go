@@ -58,7 +58,7 @@ func TestAndroidWriteRobotRead(t *testing.T) {
 	defer robotClient.Close()
 
 	done := make(chan string, messagesNum)
-	for i := 0; i < 10; i++ {
+	for i := 0; i < messagesNum; i++ {
 		_, message, err := robotClient.ReadMessage()
 		if err != nil {
 			log.Fatal(err)
