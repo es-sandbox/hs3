@@ -66,7 +66,9 @@ func controller(w http.ResponseWriter, r *http.Request) {
 
 			log.Printf("recv: %s", message)
 
-			chanCtrlMsgs <- string(message)
+			if atomic.LoadUint32(&controllerSubscriptionStatus) == 1 {
+				chanCtrlMsgs <- string(message)
+			}
 		}
 	}()
 
@@ -88,8 +90,8 @@ func controllerSubscription(w http.ResponseWriter, r *http.Request) {
 	}
 	defer c.Close()
 
-	//atomic.StoreUint32(&controllerSubscriptionStatus, 1)
-	//defer atomic.StoreUint32(&controllerSubscriptionStatus, 0)
+	atomic.StoreUint32(&controllerSubscriptionStatus, 1)
+	defer atomic.StoreUint32(&controllerSubscriptionStatus, 0)
 
 	go func() {
 		for {
