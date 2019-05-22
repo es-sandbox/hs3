@@ -40,15 +40,6 @@ func TestAndroidWriteRobotRead(t *testing.T) {
 		}
 	}()
 
-	//for {
-	//	_, message, err := c.ReadMessage()
-	//	if err != nil {
-	//		log.Println("read:", err)
-	//		return
-	//	}
-	//	log.Printf("recv: %s", message)
-	//}
-
 	robotUrl := url.URL{
 		Scheme: "ws",
 		Host:   host,
@@ -79,8 +70,6 @@ func TestAndroidWriteRobotRead(t *testing.T) {
 	for i := 0; i < 10; i++ {
 		assert(compareStrings(string(<-done), "ctrl"))
 	}
-
-	log.Println("OK")
 }
 
 func TestAndroidReadRobotWrite(t *testing.T) {
@@ -101,17 +90,6 @@ func TestAndroidReadRobotWrite(t *testing.T) {
 	}
 	defer androidClient.Close()
 
-	//go func() {
-	//	for i := 0;; i++ {
-	//		err := androidClient.WriteMessage(websocket.TextMessage, []byte("ctrl"))
-	//		if err != nil {
-	//			//log.Fatal(err)
-	//			return
-	//		}
-	//
-	//		time.Sleep(time.Second)
-	//	}
-	//}()
 	done := make(chan struct{}, 10)
 	go func() {
 		for {
@@ -141,25 +119,6 @@ func TestAndroidReadRobotWrite(t *testing.T) {
 	}
 	defer robotClient.Close()
 
-	log.Println("HERE")
-	//
-	//done := make(chan string, 10)
-	//for i := 0; i < 10; i++ {
-	//	_, message, err := robotClient.ReadMessage()
-	//	if err != nil {
-	//		log.Fatal(err)
-	//		return
-	//	}
-	//
-	//	_ = message
-	//
-	//	done <- string(message)
-	//}
-	//for i := 0; i < 10; i++ {
-	//	assert(compareStrings(string(<-done), "ctrl"))
-	//}
-	//
-	//log.Println("OK")
 	go func() {
 		for i := 0;; i++ {
 			err := robotClient.WriteMessage(websocket.TextMessage, []byte("ctrl"))
@@ -173,6 +132,4 @@ func TestAndroidReadRobotWrite(t *testing.T) {
 	for i := 0; i < 10; i++ {
 		<-done
 	}
-
-	log.Println("OK")
 }
