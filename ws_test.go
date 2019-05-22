@@ -76,6 +76,11 @@ func TestAndroidReadRobotWrite(t *testing.T) {
 	server := start()
 	defer server.shutdown()
 
+	const (
+		messagesNum = 10
+		messageText = "image"
+	)
+
 	host := fmt.Sprintf("localhost:%v", common.DefaultHttpPort)
 	androidUrl := url.URL{
 		Scheme: "ws",
@@ -90,18 +95,15 @@ func TestAndroidReadRobotWrite(t *testing.T) {
 	}
 	defer androidClient.Close()
 
-	done := make(chan struct{}, 10)
+	done := make(chan string, messagesNum)
 	go func() {
-		for {
+		for i := 0; i < messagesNum; i++ {
 			_, message, err := androidClient.ReadMessage()
 			if err != nil {
-				log.Println("read:", err)
-				return
+				log.Fatal("read:", err)
 			}
-			//log.Printf("recv: %s", message)
-			_ = message
 
-			done <- struct{}{}
+			done <- string(message)
 		}
 	}()
 
@@ -121,15 +123,15 @@ func TestAndroidReadRobotWrite(t *testing.T) {
 
 	go func() {
 		for i := 0;; i++ {
-			err := robotClient.WriteMessage(websocket.TextMessage, []byte("ctrl"))
-			if err != nil {
-				//log.Fatal(err)
+			err := robotClient.WriteMessage(websocket.TextMessage, []byte(messageText))
+			if err != nil && !strings.Contains(err.Error(), useClosedNetworkConnectionErrorMessage) {
+				log.Fatal(err)
 				return
 			}
 		}
 	}()
 
-	for i := 0; i < 10; i++ {
+	for i := 0; i < messagesNum; i++ {
 		<-done
 	}
 }
