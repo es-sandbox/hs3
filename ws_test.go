@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-func TestWs(t *testing.T) {
+func TestAndroidWriteRobotRead(t *testing.T) {
 	server := start()
 	defer server.shutdown()
 
