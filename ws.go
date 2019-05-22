@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/base64"
+	"fmt"
 	"github.com/gorilla/websocket"
 	"io/ioutil"
 	"log"
@@ -100,12 +101,14 @@ func controller(w http.ResponseWriter, r *http.Request) {
 	for {
 		select {
 		case msg := <-chanImageMsgs:
+			logBigMessage(fmt.Sprintf("WRITE TO ANDROID: %v", msg))
 			err = c.WriteMessage(websocket.TextMessage, []byte(msg))
 			if err != nil {
 				log.Println("write:", err)
 				continue
 			}
 		case event := <-chanRobotStatusEvents:
+			log.Printf("WRITE TO ANDROID %v", event)
 			if err := c.WriteMessage(websocket.TextMessage, []byte(event)); err != nil {
 				log.Println("write:", err)
 				continue
@@ -154,7 +157,7 @@ func controllerSubscription(w http.ResponseWriter, r *http.Request) {
 		_ = mt
 
 		//log.Printf("recv: %s", message)
-		logBigMessage(string(message))
+		logBigMessage(fmt.Sprintf("recv: %s", message))
 
 		// send raw image to channel only if android is active
 		if atomic.LoadUint32(&controllerStatus) == 1 {
@@ -181,10 +184,10 @@ func controllerSubscription(w http.ResponseWriter, r *http.Request) {
 }
 
 func logBigMessage(msg string) {
-	if len(msg) <= 20 {
-		log.Printf("recv: %s", msg)
+	if len(msg) <= 50 {
+		log.Println(msg)
 	} else {
-		log.Printf("recv: %s", msg[:20])
+		log.Println(msg[:50])
 	}
 }
 
