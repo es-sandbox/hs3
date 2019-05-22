@@ -153,7 +153,8 @@ func controllerSubscription(w http.ResponseWriter, r *http.Request) {
 		}
 		_ = mt
 
-		log.Printf("recv: %s", message)
+		//log.Printf("recv: %s", message)
+		logBigMessage(string(message))
 
 		// send raw image to channel only if android is active
 		if atomic.LoadUint32(&controllerStatus) == 1 {
@@ -176,6 +177,14 @@ func controllerSubscription(w http.ResponseWriter, r *http.Request) {
 			log.Printf("can't save image in server's filesystem: %v\n", err)
 			continue
 		}
+	}
+}
+
+func logBigMessage(msg string) {
+	if len(msg) <= 20 {
+		log.Printf("recv: %s", msg)
+	} else {
+		log.Printf("recv: %s", msg[:20])
 	}
 }
 
