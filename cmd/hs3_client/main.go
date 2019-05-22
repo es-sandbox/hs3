@@ -1,8 +1,10 @@
 package main
 
 import (
+	"encoding/base64"
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/url"
 	"time"
@@ -28,6 +30,8 @@ func main() {
 	wsFlag := flag.Bool("ws", false, "")
 	wsControllerFlag := flag.Bool("ws_ctrl", false, "")
 	wsControllerSubscriptionFlag := flag.Bool("ws_ctrl_sub", false, "")
+
+	wsSendRawImageFlag := flag.Bool("ws_send_raw_image", false, "")
 
 	flag.Parse()
 
@@ -81,6 +85,10 @@ func main() {
 
 	if *wsControllerSubscriptionFlag {
 		wsControllerSubscription()
+	}
+
+	if *wsSendRawImageFlag {
+		wsSendRawImage()
 	}
 }
 
@@ -188,5 +196,47 @@ func wsControllerSubscription() {
 		}
 
 		time.Sleep(time.Second)
+	}
+}
+
+func wsSendRawImage() {
+	host := fmt.Sprintf("localhost:%v", common.DefaultHttpPort)
+	u := url.URL{
+		Scheme: "ws",
+		Host:   host,
+		Path:   common.WebsocketControllerSubscriptionEndpoint,
+	}
+	log.Printf("connecting to %s", u.String())
+
+	c, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
+	if err != nil {
+		log.Fatal("dial:", err)
+	}
+	defer c.Close()
+
+	go func () {
+		for {
+			_, message, err := c.ReadMessage()
+			if err != nil {
+				log.Println("read:", err)
+				return
+			}
+			log.Printf("recv: %s", message)
+		}
+	}()
+
+	for i := 0;; i++ {
+		rawImage, err := ioutil.ReadFile("source.jpg")
+		if err != nil {
+			log.Fatalf("can't get raw image: %v\n", err)
+		}
+		rawImageBase64 := base64.StdEncoding.EncodeToString(rawImage)
+
+		if err := c.WriteMessage(websocket.TextMessage, []byte(rawImageBase64)); err != nil {
+			log.Println("write:", err)
+			return
+		}
+
+		time.Sleep(time.Second * 5)
 	}
 }

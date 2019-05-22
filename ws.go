@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/base64"
 	"github.com/gorilla/websocket"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"sync/atomic"
@@ -114,9 +116,20 @@ func controllerSubscription(w http.ResponseWriter, r *http.Request) {
 
 		log.Printf("recv: %s", message)
 
+		// send raw image to channel only if android is active
 		if atomic.LoadUint32(&controllerStatus) == 1 {
 			log.Println("android is active so pass to chanImageMsgs")
 			chanImageMsgs <- string(message)
+		}
+
+		// save images in server's filesystem always (even android is inactive)
+		rawImage, err := base64.StdEncoding.DecodeString(string(message))
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		if err := ioutil.WriteFile("final.jpg", rawImage, 0666); err != nil {
+			log.Printf("can't save image in server's filesystem: %v\n", err)
 		}
 	}
 }
