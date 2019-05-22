@@ -29,7 +29,7 @@ func echo(w http.ResponseWriter, r *http.Request) {
 		err = c.WriteMessage(mt, message)
 		if err != nil {
 			log.Println("write:", err)
-			break
+			return
 		}
 	}
 }
@@ -79,6 +79,7 @@ func controller(w http.ResponseWriter, r *http.Request) {
 	}
 	if err = c.WriteMessage(websocket.TextMessage, []byte(msg)); err != nil {
 		log.Println("write:", err)
+		return
 	}
 
 	go func() {
@@ -105,13 +106,13 @@ func controller(w http.ResponseWriter, r *http.Request) {
 			err = c.WriteMessage(websocket.TextMessage, []byte(msg))
 			if err != nil {
 				log.Println("write:", err)
-				break
+				return
 			}
 		case event := <-chanRobotStatusEvents:
 			log.Printf("WRITE TO ANDROID %v", event)
 			if err := c.WriteMessage(websocket.TextMessage, []byte(event)); err != nil {
 				log.Println("write:", err)
-				break
+				return
 			}
 		}
 	}
@@ -143,7 +144,7 @@ func controllerSubscription(w http.ResponseWriter, r *http.Request) {
 			err = c.WriteMessage(websocket.TextMessage, []byte(msg))
 			if err != nil {
 				log.Println("write:", err)
-				break
+				return
 			}
 		}
 	}()
