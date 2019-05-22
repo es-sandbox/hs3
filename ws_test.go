@@ -97,12 +97,15 @@ func TestAndroidReadRobotWrite(t *testing.T) {
 
 	done := make(chan string, messagesNum)
 	go func() {
-		for i := 0; i < messagesNum; i++ {
+		for {
 			_, message, err := androidClient.ReadMessage()
-			if err != nil {
+			if err != nil && !strings.Contains(err.Error(), useClosedNetworkConnectionErrorMessage) {
 				log.Fatal("read:", err)
 			}
 
+			if string(message) == "connected" || string(message) == "disconnected" {
+				continue
+			}
 			done <- string(message)
 		}
 	}()
@@ -132,6 +135,6 @@ func TestAndroidReadRobotWrite(t *testing.T) {
 	}()
 
 	for i := 0; i < messagesNum; i++ {
-		<-done
+		assert(compareStrings(string(<-done), messageText))
 	}
 }
