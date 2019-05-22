@@ -128,7 +128,7 @@ func controllerSubscription(w http.ResponseWriter, r *http.Request) {
 			log.Fatal(err)
 		}
 
-		if err := ioutil.WriteFile("final.jpg", rawImage, 0666); err != nil {
+		if err := ioutil.WriteFile("images/final.jpg", rawImage, 0666); err != nil {
 			log.Printf("can't save image in server's filesystem: %v\n", err)
 		}
 	}
