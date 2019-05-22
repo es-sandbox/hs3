@@ -29,6 +29,10 @@ type FlowerpotInfo struct {
 	Id       uint64
 	PouredOn bool
 }
+
+type RobotMode struct {
+	Mode uint8
+}
 ```
 	
 ## HTTP calls
@@ -37,6 +41,7 @@ Get/Post /api/v1/environment
 Get/Post /api/v1/human/heart
 Get/Post /api/v1/human/common
 Get/Post /api/v1/flowerpot
+Get/Post /api/v1/robot/mode
 ```
 
 ## Websocket calls
