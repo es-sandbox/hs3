@@ -122,6 +122,10 @@ func assert(value bool) {
 	}
 }
 
+func compareStrings(actual, expected string) bool {
+	return actual == expected
+}
+
 func compareInts(actual, expected int) bool {
 	return actual == expected
 }

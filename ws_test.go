@@ -30,9 +30,9 @@ func TestWs(t *testing.T) {
 
 	go func() {
 		for i := 0;; i++ {
-			err := androidClient.WriteMessage(websocket.TextMessage, []byte(fmt.Sprintf("ctrl_%v", i)))
+			err := androidClient.WriteMessage(websocket.TextMessage, []byte("ctrl"))
 			if err != nil {
-				log.Fatal(err)
+				//log.Fatal(err)
 				return
 			}
 
@@ -64,7 +64,7 @@ func TestWs(t *testing.T) {
 
 	log.Println("HERE")
 
-	done := make(chan struct{}, 1)
+	done := make(chan string, 1)
 	for {
 		_, message, err := robotClient.ReadMessage()
 		if err != nil {
@@ -74,10 +74,10 @@ func TestWs(t *testing.T) {
 
 		_ = message
 
-		done <- struct{}{}
+		done <- string(message)
 		break
 	}
-	<-done
+	assert(compareStrings(string(<-done), "ctrl"))
 
 	log.Println("OK")
 }
