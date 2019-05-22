@@ -6,9 +6,12 @@ import (
 	"github.com/gorilla/websocket"
 	"log"
 	"net/url"
+	"strings"
 	"testing"
 	"time"
 )
+
+const useClosedNetworkConnectionErrorMessage = "use of closed network connection"
 
 func TestAndroidWriteRobotRead(t *testing.T) {
 	server := start()
@@ -31,11 +34,9 @@ func TestAndroidWriteRobotRead(t *testing.T) {
 	go func() {
 		for i := 0;; i++ {
 			err := androidClient.WriteMessage(websocket.TextMessage, []byte("ctrl"))
-			if err != nil {
-				//log.Fatal(err)
-				return
+			if err != nil && !strings.Contains(err.Error(), useClosedNetworkConnectionErrorMessage) {
+				log.Fatal(err)
 			}
-
 			time.Sleep(time.Second)
 		}
 	}()
