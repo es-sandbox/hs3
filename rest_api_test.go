@@ -83,11 +83,37 @@ func TestGetLastHumanCommonInfoEndpoint(t *testing.T) {
 	common.Hc()
 	obj := common.GetLastHc()
 
-
 	expected := common.DefaultHcInfo
 	expected.Id = 5
 	fmt.Println(obj)
 	assert(compareHcObjects(obj, &expected), "TestEnvironmentInfoEndpoint: compareHcObjects")
+}
+
+func TestGetLastFlowerpotInfoEndpoint(t *testing.T) {
+	removeDBFile()
+	server := start()
+	defer server.shutdown()
+
+	diffObj := &message.FlowerpotInfo{
+		Id:       3,
+		PouredOn: true,
+		Humidity: 1,
+	}
+
+	_ = diffObj
+	//
+	//common.ExtendedHc(diffObj)
+	//common.ExtendedHc(diffObj)
+	//common.ExtendedHc(diffObj)
+	//common.ExtendedHc(diffObj)
+	//common.Hc()
+	//obj := common.GetLastHc()
+	//
+	//
+	//expected := common.DefaultHcInfo
+	//expected.Id = 5
+	//fmt.Println(obj)
+	//assert(compareHcObjects(obj, &expected), "TestEnvironmentInfoEndpoint: compareHcObjects")
 }
 
 func TestEnvironmentInfoEndpoint(t *testing.T) {
