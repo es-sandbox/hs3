@@ -232,7 +232,6 @@ func humanCommonInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 func flowerpotInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-		//log.Println("new GET request")
 		logrus.WithFields(logrus.Fields{
 			subsystem:   HTTP,
 			requestType: GET,
@@ -298,7 +297,6 @@ func flowerpotInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 func robotModeEndpoint(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-		//log.Println("new GET request")
 		logrus.WithFields(logrus.Fields{
 			subsystem:   HTTP,
 			requestType: GET,
