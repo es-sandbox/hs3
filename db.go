@@ -230,3 +230,31 @@ func (db *db) putRobotMode(mode *message.RobotMode) error {
 		return bucket.Put(robotModeKey, rawToDatabase)
 	})
 }
+
+
+//func (db *db) getEnvironmentInfoRecord() (*message.EnvironmentInfo, error) {
+//	var msg message.EnvironmentInfo
+//	err := db.boltDb.View(func(tx *bolt.Tx) error {
+//		bucket := tx.Bucket(environmentInfoBucketName)
+//		if bucket == nil {
+//			return nil
+//		}
+//
+//		key, value := bucket.Cursor().Last()
+//		if key == nil || value == nil {
+//			return nil
+//		}
+//		//return bucket.ForEach(func(key, value []byte) error {
+//		//	envInvo, err := message.NewEnvironmentInfoFromBytes(value)
+//		//	if err != nil {
+//		//		return err
+//		//	}
+//		//	msgs = append(msgs, envInvo)
+//		//	return nil
+//		//})
+//	})
+////	if err != nil {
+////		return nil, err
+////	}
+////	return msgs, nil
+//}
