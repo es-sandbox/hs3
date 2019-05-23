@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"os/exec"
@@ -20,6 +21,7 @@ func TestEnvironmentInfoEndpoint(t *testing.T) {
 	common.Env()
 	objectSlice := common.GetEnv()
 
+	fmt.Printf("DEBUG: len(objectSlice): %v, expected: %v\n", len(objectSlice), 1)
 	assert(compareInts(len(objectSlice), 1), "TestEnvironmentInfoEndpoint: compareInts")
 	obj := objectSlice[0]
 
