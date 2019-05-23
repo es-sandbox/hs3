@@ -300,3 +300,26 @@ func (db *db) getHumanCommonInfoRecord() (*message.HumanCommonInfo, error) {
 	}
 	return msg, nil
 }
+
+func (db *db) getFlowerpotInfoRecord() (*message.FlowerpotInfo, error) {
+	var msg *message.FlowerpotInfo
+	err := db.boltDb.View(func(tx *bolt.Tx) error {
+		bucket := tx.Bucket(flowerpotInfoBucketName)
+		if bucket == nil {
+			return nil
+		}
+
+		key, value := bucket.Cursor().Last()
+		if key == nil || value == nil {
+			return nil
+		}
+
+		var err error
+		msg, err = message.NewFlowerpotInfoFromBytes(value)
+		return err
+	})
+	if err != nil {
+		return nil, err
+	}
+	return msg, nil
+}

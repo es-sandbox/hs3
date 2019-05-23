@@ -322,6 +322,27 @@ func main() {
 		}
 	})
 
+	http.HandleFunc(common.GetLastFlowerpotInfoEndpoint, func(w http.ResponseWriter, r *http.Request) {
+		log.Println("new GET request")
+
+		flowerpotInfo, err := db.getFlowerpotInfoRecord()
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		raw, err := json.Marshal(flowerpotInfo)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		if _, err := w.Write(raw); err != nil {
+			log.Println(err)
+			return
+		}
+	})
+
 	http.HandleFunc(common.WebsocketEchoEndpoint, echo)
 	http.HandleFunc(common.WebsocketControllerEndpoint, controller)
 	http.HandleFunc(common.WebsocketControllerSubscriptionEndpoint, controllerSubscription)
