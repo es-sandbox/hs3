@@ -106,6 +106,8 @@ func TestConnDisconnWs(t *testing.T) {
 			expected = "connected"
 		}
 
-		assert(compareStrings(<-done, expected), "VERIFY CONN/DISCONN MESSAGE")
+		actual := <-done
+		fmt.Printf("DEBUG: actual: %v, expected: %v\n", actual, expected)
+		assert(compareStrings(actual, expected), "VERIFY CONN/DISCONN MESSAGE")
 	}
 }
