@@ -221,6 +221,23 @@ func PrintFp() {
 	}
 }
 
+func GetLastFp() *message.FlowerpotInfo {
+	url := fmt.Sprintf("http://localhost:%v%v", DefaultHttpPort, GetLastFlowerpotInfoEndpoint)
+	fmt.Println(url)
+	resp, err := http.Get(url)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	raw, err := ioutil.ReadAll(resp.Body)
+
+	var result *message.FlowerpotInfo
+	if err := json.Unmarshal(raw, &result); err != nil {
+		log.Fatal(err)
+	}
+	return result
+}
+
 func GetFp() []*message.FlowerpotInfo {
 	url := fmt.Sprintf("http://localhost:%v%v", DefaultHttpPort, PutFlowerpotInfoEndpoint)
 	fmt.Println(url)

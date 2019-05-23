@@ -105,13 +105,13 @@ func TestGetLastFlowerpotInfoEndpoint(t *testing.T) {
 	common.ExtendedFp(diffObj)
 	common.ExtendedFp(diffObj)
 	common.Fp()
-	//obj := common.GetLastHc()
-	//
-	//
-	//expected := common.DefaultHcInfo
-	//expected.Id = 5
-	//fmt.Println(obj)
-	//assert(compareHcObjects(obj, &expected), "TestEnvironmentInfoEndpoint: compareHcObjects")
+	obj := common.GetLastFp()
+
+
+	expected := common.DefaultFlowerpotInfo
+	expected.Id = 5
+	fmt.Println(obj)
+	assert(compareFpObjects(obj, &expected), "TestEnvironmentInfoEndpoint: compareFpObjects")
 }
 
 func TestEnvironmentInfoEndpoint(t *testing.T) {
