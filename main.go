@@ -41,50 +41,7 @@ func main() {
 
 	http.HandleFunc(common.PutHumanCommonInfoEndpoint, humanCommonInfoEndpoint)
 
-	http.HandleFunc(common.PutFlowerpotInfoEndpoint, func(w http.ResponseWriter, r *http.Request) {
-		switch r.Method {
-		case "GET":
-			log.Println("new GET request")
-
-			fpInfo, err := db.GetAllFlowerpotInfoRecords()
-			if err != nil {
-				log.Println(err)
-				return
-			}
-
-			raw, err := json.Marshal(fpInfo)
-			if err != nil {
-				log.Println(err)
-				return
-			}
-
-			if _, err := w.Write(raw); err != nil {
-				log.Println(err)
-				return
-			}
-		case "POST":
-			log.Println("new POST request")
-
-			raw, err := ioutil.ReadAll(r.Body)
-			if err != nil {
-				log.Println(err)
-				return
-			}
-
-			var flowerpotInfo message.FlowerpotInfo
-			if err := json.Unmarshal(raw, &flowerpotInfo); err != nil {
-				log.Println(err)
-				return
-			}
-
-			log.Println(flowerpotInfo)
-
-			if err := db.PutFlowerpotInfo(&flowerpotInfo); err != nil {
-				log.Println(err)
-				return
-			}
-		}
-	})
+	http.HandleFunc(common.PutFlowerpotInfoEndpoint, flowerpotInfoEndpoint)
 
 	http.HandleFunc(common.PutRobotModeEndpoint, func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
