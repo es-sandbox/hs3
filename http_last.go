@@ -2,12 +2,19 @@ package main
 
 import (
 	"encoding/json"
+	"github.com/sirupsen/logrus"
 	"log"
 	"net/http"
 )
 
 func lastEnvironmentInfoEndpoint(w http.ResponseWriter, r *http.Request) {
-	log.Println("new GET request")
+	//log.Println("new GET request")
+	logrus.WithFields(logrus.Fields{
+		subsystem:    HTTP,
+		requestType:  GET,
+		eventType:    environmentInfo,
+		"additional": "last",
+	}).Info("new request")
 
 	envInfo, err := db.GetEnvironmentInfoRecord()
 	if err != nil {
@@ -20,6 +27,12 @@ func lastEnvironmentInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
+
+	logrus.WithFields(logrus.Fields{
+		subsystem:   HTTP,
+		eventType:   environmentInfo,
+		messageType: RAW,
+	}).Infof("try to send: %v", raw)
 
 	if _, err := w.Write(raw); err != nil {
 		log.Println(err)
