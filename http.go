@@ -195,3 +195,52 @@ func flowerpotInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
+
+func robotModeEndpoint(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "GET":
+		log.Println("new GET request")
+
+		fpInfo, err := db.GetRobotMode()
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		raw, err := json.Marshal(fpInfo)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		if _, err := w.Write(raw); err != nil {
+			log.Println(err)
+			return
+		}
+	case "POST":
+		log.Println("new POST request")
+
+		raw, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		log.Println("RAW", raw)
+
+		var mode message.RobotMode
+		if err := json.Unmarshal(raw, &mode); err != nil {
+			log.Println(err)
+			return
+		}
+
+		log.Println("PARSED", mode)
+
+		if err := db.PutRobotMode(&mode); err != nil {
+			log.Println(err)
+			return
+		}
+
+		chanRobotModeСhanges <- mode.Mode
+	}
+}
