@@ -175,8 +175,8 @@ func controllerSubscription(w http.ResponseWriter, r *http.Request) {
 			case mode := <-chanRobotModeСhanges:
 				//{"method":mode, "mode": int }
 				type robotMode struct {
-					Method string
-					Mode   uint8
+					Method string `json:"method"`
+					Mode   uint8  `json:"mode"`
 				}
 				obj := robotMode{
 					Method: "mode",
