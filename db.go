@@ -277,3 +277,26 @@ func (db *db) getHumanHeartInfoRecord() (*message.HumanHeartInfo, error) {
 	}
 	return msg, nil
 }
+
+func (db *db) getHumanCommonInfoRecord() (*message.HumanCommonInfo, error) {
+	var msg *message.HumanCommonInfo
+	err := db.boltDb.View(func(tx *bolt.Tx) error {
+		bucket := tx.Bucket(humanCommonInfoBucketName)
+		if bucket == nil {
+			return nil
+		}
+
+		key, value := bucket.Cursor().Last()
+		if key == nil || value == nil {
+			return nil
+		}
+
+		var err error
+		msg, err = message.NewHumanCommonInfoFromBytes(value)
+		return err
+	})
+	if err != nil {
+		return nil, err
+	}
+	return msg, nil
+}

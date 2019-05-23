@@ -301,26 +301,26 @@ func main() {
 		}
 	})
 
-	//http.HandleFunc(common.GetLastHumanCommonInfoEndpoint, func(w http.ResponseWriter, r *http.Request) {
-	//	log.Println("new GET request")
-	//
-	//	hhInfo, err := db.getHumanHeartInfoRecord()
-	//	if err != nil {
-	//		log.Println(err)
-	//		return
-	//	}
-	//
-	//	raw, err := json.Marshal(hhInfo)
-	//	if err != nil {
-	//		log.Println(err)
-	//		return
-	//	}
-	//
-	//	if _, err := w.Write(raw); err != nil {
-	//		log.Println(err)
-	//		return
-	//	}
-	//})
+	http.HandleFunc(common.GetLastHumanCommonInfoEndpoint, func(w http.ResponseWriter, r *http.Request) {
+		log.Println("new GET request")
+
+		hcInfo, err := db.getHumanCommonInfoRecord()
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		raw, err := json.Marshal(hcInfo)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		if _, err := w.Write(raw); err != nil {
+			log.Println(err)
+			return
+		}
+	})
 
 	http.HandleFunc(common.WebsocketEchoEndpoint, echo)
 	http.HandleFunc(common.WebsocketControllerEndpoint, controller)
