@@ -10,10 +10,29 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+const (
+	subsystem   = "subsystem"
+	requestType = "request_type"
+	eventType   = "event_type"
+	messageType = "message_type"
+
+	HTTP = "HTTP"
+	GET  = "GET"
+	POST = "POST"
+
+	RAW    = "RAW"
+	PARSED = "PARSED"
+
+	environmentInfo = "environment_info"
+)
+
 func environmentInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-		log.Println("new GET request")
+		logrus.WithFields(logrus.Fields{
+			subsystem:   HTTP,
+			requestType: GET,
+		}).Info("new request")
 
 		envInfo, err := db.GetAllEnvironmentInfoRecords()
 		if err != nil {
@@ -32,7 +51,10 @@ func environmentInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	case "POST":
-		log.Println("new POST request")
+		logrus.WithFields(logrus.Fields{
+			subsystem:   HTTP,
+			requestType: POST,
+		}).Info("new request")
 
 		raw, err := ioutil.ReadAll(r.Body)
 		if err != nil {
@@ -41,9 +63,9 @@ func environmentInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 		}
 
 		logrus.WithFields(logrus.Fields{
-			"subsystem": "HTTP",
-			"event_type": "environment_info",
-			"message_type": "RAW",
+			subsystem:   HTTP,
+			eventType:   environmentInfo,
+			messageType: RAW,
 		}).Info(string(raw))
 
 		var envInfo message.EnvironmentInfo
@@ -53,9 +75,9 @@ func environmentInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 		}
 
 		logrus.WithFields(logrus.Fields{
-			"subsystem": "HTTP",
-			"event_type": "environment_info",
-			"message_type": "PARSED",
+			subsystem:   HTTP,
+			eventType:   environmentInfo,
+			messageType: PARSED,
 		}).Info(envInfo)
 
 		if err := db.PutEnvironmentInfoRecord(&envInfo); err != nil {
