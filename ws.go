@@ -112,7 +112,12 @@ func controller(w http.ResponseWriter, r *http.Request) {
 	for {
 		select {
 		case msg := <-chanImageMsgs:
-			logBigMessage(fmt.Sprintf("WRITE TO ANDROID: %v", msg))
+			//logBigMessage(fmt.Sprintf("WRITE TO ANDROID: %v", msg))
+			logrus.WithFields(logrus.Fields{
+				subsystem: WS,
+				Source:    AndroidSource,
+				Direction: Write,
+			}).Info(cutMessage(msg))
 			err = c.WriteMessage(websocket.TextMessage, []byte(msg))
 			if err != nil {
 				log.Println("write:", err)
@@ -231,6 +236,14 @@ func controllerSubscription(w http.ResponseWriter, r *http.Request) {
 			log.Printf("can't save image in server's filesystem: %v\n", err)
 			continue
 		}
+	}
+}
+
+func cutMessage(msg string) string {
+	if len(msg) <= 50 {
+		return msg
+	} else {
+		return msg[:50]
 	}
 }
 
