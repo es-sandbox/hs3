@@ -42,6 +42,11 @@ Get/Post /api/v1/human/heart
 Get/Post /api/v1/human/common
 Get/Post /api/v1/flowerpot
 Get/Post /api/v1/robot/mode
+
+GET /api/v1/environment/last
+GET /api/v1/human/heart/last
+GET /api/v1/human/common/last
+GET /api/v1/flowerpot/last
 ```
 
 ## Websocket calls
