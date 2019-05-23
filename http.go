@@ -24,6 +24,7 @@ const (
 	PARSED = "PARSED"
 
 	environmentInfo = "environment_info"
+	humanHeartInfoEvent  = "human_heart_info"
 )
 
 func environmentInfoEndpoint(w http.ResponseWriter, r *http.Request) {
@@ -32,6 +33,7 @@ func environmentInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 		logrus.WithFields(logrus.Fields{
 			subsystem:   HTTP,
 			requestType: GET,
+			eventType:   environmentInfo,
 		}).Info("new request")
 
 		envInfo, err := db.GetAllEnvironmentInfoRecords()
@@ -54,6 +56,7 @@ func environmentInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 		logrus.WithFields(logrus.Fields{
 			subsystem:   HTTP,
 			requestType: POST,
+			eventType:   environmentInfo,
 		}).Info("new request")
 
 		raw, err := ioutil.ReadAll(r.Body)
@@ -90,7 +93,11 @@ func environmentInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 func humanHeartInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-		log.Println("new GET request")
+		logrus.WithFields(logrus.Fields{
+			subsystem:   HTTP,
+			requestType: GET,
+			eventType:   humanHeartInfoEvent,
+		}).Info("new request")
 
 		hhInfo, err := db.GetAllHumanHeartInfoRecords()
 		if err != nil {
@@ -109,7 +116,11 @@ func humanHeartInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	case "POST":
-		log.Println("new POST request")
+		logrus.WithFields(logrus.Fields{
+			subsystem:   HTTP,
+			requestType: POST,
+			eventType:   humanHeartInfoEvent,
+		}).Info("new request")
 
 		raw, err := ioutil.ReadAll(r.Body)
 		if err != nil {
@@ -117,7 +128,11 @@ func humanHeartInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		log.Println("RAW", raw)
+		logrus.WithFields(logrus.Fields{
+			subsystem:   HTTP,
+			eventType:   humanHeartInfoEvent,
+			messageType: RAW,
+		}).Info(string(raw))
 
 		var humanHeartInfo message.HumanHeartInfo
 		if err := json.Unmarshal(raw, &humanHeartInfo); err != nil {
@@ -125,7 +140,11 @@ func humanHeartInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		log.Println("PARSED", humanHeartInfo)
+		logrus.WithFields(logrus.Fields{
+			subsystem:   HTTP,
+			eventType:   humanHeartInfo,
+			messageType: PARSED,
+		}).Info(humanHeartInfo)
 
 		if err := db.PutHumanHeartInfo(&humanHeartInfo); err != nil {
 			log.Println(err)
