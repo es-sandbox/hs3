@@ -66,23 +66,46 @@ func TestConnDisconnWs(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	
+
+	done := make(chan string, 5)
+	go func (){
+		for i := 0; i < 5; i++ {
+			_, message, err = androidClient.ReadMessage()
+			if err != nil {
+				log.Fatal(err)
+				return
+			}
+
+			done <- string(message)
+		}
+	}()
 
 
 	// ------------------------------ ROBOT RELAUNCHING ------------------------------
-	for i := 0; i < 2; i++ {
-		robotClient, _, err = websocket.DefaultDialer.Dial(robotUrl.String(), nil)
-		if err != nil {
-			log.Fatal("dial:", err)
+	go func() {
+		for i := 0; i < 2; i++ {
+			robotClient, _, err = websocket.DefaultDialer.Dial(robotUrl.String(), nil)
+			if err != nil {
+				log.Fatal("dial:", err)
+			}
+
+			time.Sleep(time.Millisecond * 500)
+
+			if err := robotClient.Close(); err != nil {
+				log.Fatal(err)
+			}
+
+			time.Sleep(time.Millisecond * 500)
 		}
-
-		time.Sleep(time.Millisecond * 500)
-
-		if err := robotClient.Close(); err != nil {
-			log.Fatal(err)
-		}
-
-		time.Sleep(time.Millisecond * 500)
-	}
+	}()
 	// -------------------------------------------------------------------------------
+
+	for i := 0; i < 5; i++ {
+		expected := "disconnected"
+		if i % 2 == 1 {
+			expected = "connected"
+		}
+
+		assert(compareStrings(<-done, expected))
+	}
 }
