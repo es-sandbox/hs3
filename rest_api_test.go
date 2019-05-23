@@ -57,12 +57,12 @@ func TestGetLastHumanHeartInfoEndpoint(t *testing.T) {
 	common.ExtendedHh(diffObj)
 	common.ExtendedHh(diffObj)
 	common.Hh()
-	//obj := common.GetLastEnv()
-	//
-	//expected := common.DefaultEnvInfo
-	//expected.Id = 5
-	//fmt.Println(obj)
-	//assert(compareEnvObjects(obj, &expected), "TestEnvironmentInfoEndpoint: compareEnvObjects")
+	obj := common.GetLastHh()
+
+	expected := common.DefaultHumanHeartInfo
+	expected.Id = 5
+	fmt.Println(obj)
+	assert(compareHhObjects(obj, &expected), "TestEnvironmentInfoEndpoint: compareHhObjects")
 }
 
 func TestEnvironmentInfoEndpoint(t *testing.T) {

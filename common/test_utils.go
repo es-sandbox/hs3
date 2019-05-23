@@ -105,6 +105,22 @@ func PrintHh() {
 	}
 }
 
+func GetLastHh() *message.HumanHeartInfo {
+	url := fmt.Sprintf("http://localhost:%v%v", DefaultHttpPort, GetLastHumanHeartInfoEndpoint)
+	fmt.Println(url)
+	resp, err := http.Get(url)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	raw, err := ioutil.ReadAll(resp.Body)
+
+	var result *message.HumanHeartInfo
+	if err := json.Unmarshal(raw, &result); err != nil {
+		log.Fatal(err)
+	}
+	return result
+}
 
 func GetHh() []*message.HumanHeartInfo {
 	url := fmt.Sprintf("http://localhost:%v%v", DefaultHttpPort, PutHumanHeartInfoEndpoint)
