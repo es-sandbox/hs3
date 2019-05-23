@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/websocket"
+	"github.com/sirupsen/logrus"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -96,7 +97,11 @@ func controller(w http.ResponseWriter, r *http.Request) {
 			}
 			_ = mt
 
-			log.Printf("recv: %s", message)
+			logrus.WithFields(logrus.Fields{
+				subsystem: WS,
+				Source:    AndroidSource,
+				Direction: Read,
+			}).Info(string(message))
 
 			if atomic.LoadUint32(&controllerSubscriptionStatus) == 1 {
 				chanCtrlMsgs <- string(message)

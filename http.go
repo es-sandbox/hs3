@@ -26,6 +26,16 @@ const (
 	environmentInfo      = "environment_info"
 	humanHeartInfoEvent  = "human_heart_info"
 	humanCommonInfoEvent = "human_common_info"
+
+	WS = "WS"
+
+	Source        = "source"
+	AndroidSource = "ANDROID"
+	RobotSource   = "ROBOT"
+
+	Direction = "direction"
+	Read      = "READ"
+	Write     = "WRITE"
 )
 
 func environmentInfoEndpoint(w http.ResponseWriter, r *http.Request) {
