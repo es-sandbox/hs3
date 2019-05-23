@@ -38,13 +38,15 @@ func environmentInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		log.Println("RAW", raw)
+
 		var envInfo message.EnvironmentInfo
 		if err := json.Unmarshal(raw, &envInfo); err != nil {
 			log.Println(err)
 			return
 		}
 
-		log.Println(envInfo)
+		log.Println("PARSED", envInfo)
 
 		if err := db.PutEnvironmentInfoRecord(&envInfo); err != nil {
 			log.Println(err)
