@@ -65,6 +65,7 @@ func TestConnDisconnWs(t *testing.T) {
 	if err := robotClient.Close(); err != nil {
 		log.Fatal(err)
 	}
+	time.Sleep(time.Millisecond * 500)
 
 
 	done := make(chan string, 5)
