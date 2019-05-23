@@ -91,7 +91,7 @@ func TestDoubleSidedWs(t *testing.T) {
 	//
 	// ------------------------------ VERIFY ROBOT RECEIVED MESSAGES ------------------------------
 	for i := 0; i < messagesNum; i++ {
-		assert(compareStrings(string(<-done), messageText))
+		assert(compareStrings(string(<-done), messageText), "VERIFY ROBOT RECEIVED MESSAGES")
 	}
 	// --------------------------------------------------------------------------------------------
 
@@ -119,7 +119,7 @@ func TestDoubleSidedWs(t *testing.T) {
 	//
 	// ------------------------------ VERIFY ANDROID RECEIVED MESSAGES ----------------------------
 	for i := 0; i < messagesNum; i++ {
-		assert(compareStrings(string(<-done), messageText))
+		assert(compareStrings(string(<-done), messageText), "VERIFY ANDROID RECEIVED MESSAGES")
 	}
 	// --------------------------------------------------------------------------------------------
 }

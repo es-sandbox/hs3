@@ -68,7 +68,7 @@ func TestAndroidWriteRobotRead(t *testing.T) {
 		done <- string(message)
 	}
 	for i := 0; i < messagesNum; i++ {
-		assert(compareStrings(string(<-done), messageText))
+		assert(compareStrings(string(<-done), messageText), "TestAndroidWriteRobotRead: compareStrings")
 	}
 }
 
@@ -134,6 +134,6 @@ func TestAndroidReadRobotWrite(t *testing.T) {
 	}()
 
 	for i := 0; i < messagesNum; i++ {
-		assert(compareStrings(string(<-done), messageText))
+		assert(compareStrings(string(<-done), messageText), "TestAndroidReadRobotWrite: compareStrings")
 	}
 }

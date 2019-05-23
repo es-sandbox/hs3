@@ -36,7 +36,7 @@ func TestConnDisconnWs(t *testing.T) {
 		return
 	}
 
-	assert(compareStrings(string(message), "disconnected"))
+	assert(compareStrings(string(message), "disconnected"), "VERIFY DISCONNECTED MESSAGE")
 	// -----------------------------------------------------------------------------------------
 
 	// ------------------------------ ROBOT CLIENT CONNECT ------------------------------
@@ -60,7 +60,7 @@ func TestConnDisconnWs(t *testing.T) {
 		return
 	}
 
-	assert(compareStrings(string(message), "connected"))
+	assert(compareStrings(string(message), "connected"), "VERIFY CONNECTED MESSAGE")
 	// --------------------------------------------------------------------------------------
 	if err := robotClient.Close(); err != nil {
 		log.Fatal(err)
@@ -106,6 +106,6 @@ func TestConnDisconnWs(t *testing.T) {
 			expected = "connected"
 		}
 
-		assert(compareStrings(<-done, expected))
+		assert(compareStrings(<-done, expected), "VERIFY CONN/DISCONN MESSAGE")
 	}
 }

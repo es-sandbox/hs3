@@ -20,12 +20,12 @@ func TestEnvironmentInfoEndpoint(t *testing.T) {
 	common.Env()
 	objectSlice := common.GetEnv()
 
-	assert(compareInts(len(objectSlice), 1))
+	assert(compareInts(len(objectSlice), 1), "TestEnvironmentInfoEndpoint: compareInts")
 	obj := objectSlice[0]
 
 	expected := common.DefaultEnvInfo
 	expected.Id = 1
-	assert(compareEnvObjects(obj, &expected))
+	assert(compareEnvObjects(obj, &expected), "TestEnvironmentInfoEndpoint: compareEnvObjects")
 }
 
 func TestHumanHeartInfoEndpoint(t *testing.T) {
@@ -36,12 +36,12 @@ func TestHumanHeartInfoEndpoint(t *testing.T) {
 	common.Hh()
 	objectSlice := common.GetHh()
 
-	assert(compareInts(len(objectSlice), 1))
+	assert(compareInts(len(objectSlice), 1), "TestHumanHeartInfoEndpoint: compareInts")
 	obj := objectSlice[0]
 
 	expected := common.DefaultHumanHeartInfo
 	expected.Id = 1
-	assert(compareHhObjects(obj, &expected))
+	assert(compareHhObjects(obj, &expected), "TestHumanHeartInfoEndpoint: compareHhObjects")
 }
 
 func TestHumanCommonInfoEndpoint(t *testing.T) {
@@ -52,12 +52,12 @@ func TestHumanCommonInfoEndpoint(t *testing.T) {
 	common.Hc()
 	objectSlice := common.GetHc()
 
-	assert(compareInts(len(objectSlice), 1))
+	assert(compareInts(len(objectSlice), 1), "TestHumanCommonInfoEndpoint: compareInts")
 	obj := objectSlice[0]
 
 	expected := common.DefaultHcInfo
 	expected.Id = 1
-	assert(compareHcObjects(obj, &expected))
+	assert(compareHcObjects(obj, &expected), "TestHumanCommonInfoEndpoint: compareHcObjects")
 }
 
 func TestFlowerpotInfoInfoEndpoint(t *testing.T) {
@@ -68,12 +68,12 @@ func TestFlowerpotInfoInfoEndpoint(t *testing.T) {
 	common.Fp()
 	objectSlice := common.GetFp()
 
-	assert(compareInts(len(objectSlice), 1))
+	assert(compareInts(len(objectSlice), 1), "TestFlowerpotInfoInfoEndpoint: compareInts")
 	obj := objectSlice[0]
 
 	expected := common.DefaultFlowerpotInfo
 	expected.Id = 1
-	assert(compareFpObjects(obj, &expected))
+	assert(compareFpObjects(obj, &expected), "TestFlowerpotInfoInfoEndpoint: compareFpObjects")
 }
 
 func TestRobotModeEndpoint(t *testing.T) {
@@ -85,7 +85,7 @@ func TestRobotModeEndpoint(t *testing.T) {
 	obj := common.GetMode()
 
 	expected := common.DefaultRobotMode
-	assert(compareRobotModeObjects(obj, &expected))
+	assert(compareRobotModeObjects(obj, &expected), "TestRobotModeEndpoint: compareRobotModeObjects")
 }
 
 func removeDBFile() {
@@ -116,9 +116,9 @@ func (s *server) shutdown() {
 	time.Sleep(time.Second)
 }
 
-func assert(value bool) {
+func assert(value bool, message string) {
 	if !value {
-		log.Fatal("assertion failed")
+		log.Fatal("assertion failed", message)
 	}
 }
 
