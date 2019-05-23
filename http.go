@@ -26,6 +26,7 @@ const (
 	environmentInfo      = "environment_info"
 	humanHeartInfoEvent  = "human_heart_info"
 	humanCommonInfoEvent = "human_common_info"
+	flowerpotInfoEvent   = "flowerpot_info"
 
 	WS = "WS"
 
@@ -230,7 +231,12 @@ func humanCommonInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 func flowerpotInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-		log.Println("new GET request")
+		//log.Println("new GET request")
+		logrus.WithFields(logrus.Fields{
+			subsystem:   HTTP,
+			requestType: GET,
+			eventType:   flowerpotInfoEvent,
+		}).Info("new request")
 
 		fpInfo, err := db.GetAllFlowerpotInfoRecords()
 		if err != nil {
@@ -249,7 +255,11 @@ func flowerpotInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	case "POST":
-		log.Println("new POST request")
+		logrus.WithFields(logrus.Fields{
+			subsystem:   HTTP,
+			requestType: POST,
+			eventType:   flowerpotInfoEvent,
+		}).Info("new request")
 
 		raw, err := ioutil.ReadAll(r.Body)
 		if err != nil {
@@ -257,7 +267,12 @@ func flowerpotInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		log.Println("RAW", raw)
+		//log.Println("RAW", raw)
+		logrus.WithFields(logrus.Fields{
+			subsystem:   HTTP,
+			eventType:   flowerpotInfoEvent,
+			messageType: RAW,
+		}).Info(string(raw))
 
 		var flowerpotInfo message.FlowerpotInfo
 		if err := json.Unmarshal(raw, &flowerpotInfo); err != nil {
@@ -265,7 +280,12 @@ func flowerpotInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		log.Println("PARSED", flowerpotInfo)
+		//log.Println("PARSED", flowerpotInfo)
+		logrus.WithFields(logrus.Fields{
+			subsystem:   HTTP,
+			eventType:   flowerpotInfoEvent,
+			messageType: PARSED,
+		}).Info(flowerpotInfo)
 
 		if err := db.PutFlowerpotInfo(&flowerpotInfo); err != nil {
 			log.Println(err)
