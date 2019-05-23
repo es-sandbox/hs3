@@ -61,6 +61,17 @@ func TestDoubleSidedWs(t *testing.T) {
 	defer robotClient.Close()
 	// ----------------------------------------------------------------------------------
 
+	// ------------------------------ ROBOT CLIENT INFINITELY WRITE ------------------------------
+	go func() {
+		for i := 0;; i++ {
+			err := robotClient.WriteMessage(websocket.TextMessage, []byte(messageText))
+			if err != nil && !strings.Contains(err.Error(), useClosedNetworkConnectionErrorMessage) {
+				log.Fatal(err)
+			}
+		}
+	}()
+	// -------------------------------------------------------------------------------------------
+
 	// ------------------------------ ROBOT CLIENT READ messagesNum MESSAGES ------------------------------
 	done := make(chan string, messagesNum)
 	for i := 0; i < messagesNum; i++ {
@@ -79,6 +90,34 @@ func TestDoubleSidedWs(t *testing.T) {
 	//
 	//
 	// ------------------------------ VERIFY ROBOT RECEIVED MESSAGES ------------------------------
+	for i := 0; i < messagesNum; i++ {
+		assert(compareStrings(string(<-done), messageText))
+	}
+	// --------------------------------------------------------------------------------------------
+
+	// ------------------------------ ANDROID CLIENT READ messagesNum MESSAGES ----------------------------
+	go func() {
+		for i := 0;; i++ {
+			_, message, err := androidClient.ReadMessage()
+			if err != nil && !strings.Contains(err.Error(), useClosedNetworkConnectionErrorMessage) {
+				log.Fatal(err)
+				return
+			}
+
+			if string(message) == "connected" || string(message) == "disconnected" {
+				continue
+			}
+
+			done <- string(message)
+		}
+	}()
+	// ----------------------------------------------------------------------------------------------------
+	//
+	//
+	// USE DONE CHANNELS AS INTERMEDIARY BETWEEN ROBOT AND VERIFICATION
+	//
+	//
+	// ------------------------------ VERIFY ANDROID RECEIVED MESSAGES ----------------------------
 	for i := 0; i < messagesNum; i++ {
 		assert(compareStrings(string(<-done), messageText))
 	}
