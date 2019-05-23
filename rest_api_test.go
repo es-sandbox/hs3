@@ -100,13 +100,11 @@ func TestGetLastFlowerpotInfoEndpoint(t *testing.T) {
 		Humidity: 1,
 	}
 
-	_ = diffObj
-	//
-	//common.ExtendedHc(diffObj)
-	//common.ExtendedHc(diffObj)
-	//common.ExtendedHc(diffObj)
-	//common.ExtendedHc(diffObj)
-	//common.Hc()
+	common.ExtendedFp(diffObj)
+	common.ExtendedFp(diffObj)
+	common.ExtendedFp(diffObj)
+	common.ExtendedFp(diffObj)
+	common.Fp()
 	//obj := common.GetLastHc()
 	//
 	//
