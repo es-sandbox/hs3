@@ -27,6 +27,7 @@ const (
 	humanHeartInfoEvent  = "human_heart_info"
 	humanCommonInfoEvent = "human_common_info"
 	flowerpotInfoEvent   = "flowerpot_info"
+	robotModeEvent       = "robot_mode"
 
 	WS = "WS"
 
@@ -297,7 +298,12 @@ func flowerpotInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 func robotModeEndpoint(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-		log.Println("new GET request")
+		//log.Println("new GET request")
+		logrus.WithFields(logrus.Fields{
+			subsystem:   HTTP,
+			requestType: GET,
+			eventType:   robotModeEvent,
+		}).Info("new request")
 
 		fpInfo, err := db.GetRobotMode()
 		if err != nil {
@@ -316,7 +322,12 @@ func robotModeEndpoint(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	case "POST":
-		log.Println("new POST request")
+		//log.Println("new POST request")
+		logrus.WithFields(logrus.Fields{
+			subsystem:   HTTP,
+			requestType: POST,
+			eventType:   robotModeEvent,
+		}).Info("new request")
 
 		raw, err := ioutil.ReadAll(r.Body)
 		if err != nil {
@@ -324,7 +335,12 @@ func robotModeEndpoint(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		log.Println("RAW", raw)
+		//log.Println("RAW", raw)
+		logrus.WithFields(logrus.Fields{
+			subsystem:   HTTP,
+			eventType:   robotModeEvent,
+			messageType: RAW,
+		}).Info(string(raw))
 
 		var mode message.RobotMode
 		if err := json.Unmarshal(raw, &mode); err != nil {
@@ -332,7 +348,12 @@ func robotModeEndpoint(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		log.Println("PARSED", mode)
+		//log.Println("PARSED", mode)
+		logrus.WithFields(logrus.Fields{
+			subsystem:   HTTP,
+			eventType:   robotModeEvent,
+			messageType: PARSED,
+		}).Info(mode)
 
 		if err := db.PutRobotMode(&mode); err != nil {
 			log.Println(err)
