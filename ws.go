@@ -187,6 +187,12 @@ func controllerSubscription(w http.ResponseWriter, r *http.Request) {
 					log.Println("write:", err)
 					return
 				}
+
+				logrus.WithFields(logrus.Fields{
+					subsystem: WS,
+					Source:    RobotSource,
+					Direction: Write,
+				}).Info(msg)
 			case mode := <-chanRobotModeСhanges:
 				//{"method":mode, "mode": int }
 				type robotMode struct {
