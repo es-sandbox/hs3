@@ -179,13 +179,15 @@ func flowerpotInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		log.Println("RAW", raw)
+
 		var flowerpotInfo message.FlowerpotInfo
 		if err := json.Unmarshal(raw, &flowerpotInfo); err != nil {
 			log.Println(err)
 			return
 		}
 
-		log.Println(flowerpotInfo)
+		log.Println("PARSED", flowerpotInfo)
 
 		if err := db.PutFlowerpotInfo(&flowerpotInfo); err != nil {
 			log.Println(err)
