@@ -240,10 +240,14 @@ func GetFp() []*message.FlowerpotInfo {
 }
 
 func Fp() {
-	fpInfo := message.FlowerpotInfo{
-		PouredOn: false,
-		Humidity: 1,
-	}
+	ExtendedFp(&DefaultFlowerpotInfo)
+}
+
+func ExtendedFp(fpInfo *message.FlowerpotInfo) {
+	//fpInfo := message.FlowerpotInfo{
+	//	PouredOn: false,
+	//	Humidity: 1,
+	//}
 	raw, err := json.Marshal(fpInfo)
 	if err != nil {
 		log.Fatal(err)
