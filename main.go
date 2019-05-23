@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/es-sandbox/hs3/bolt_db"
 	"github.com/es-sandbox/hs3/bolt_db/storage"
 	"io/ioutil"
 	"log"
@@ -14,6 +15,8 @@ import (
 	"github.com/es-sandbox/hs3/message"
 )
 
+var db bolt_db.Store
+
 func main() {
 	// Open the my.db data file in your current directory.
 	// It will be created if it doesn't exist.
@@ -23,7 +26,7 @@ func main() {
 	}
 	defer boltDb.Close()
 
-	db := storage.New(boltDb)
+	db = storage.New(boltDb)
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if _, err := fmt.Fprintf(w, "Welcome to my website!"); err != nil {
@@ -32,50 +35,7 @@ func main() {
 		}
 	})
 
-	http.HandleFunc(common.PutEnvironmentInfoEndpoint, func(w http.ResponseWriter, r *http.Request) {
-		switch r.Method {
-		case "GET":
-			log.Println("new GET request")
-
-			envInfo, err := db.GetAllEnvironmentInfoRecords()
-			if err != nil {
-				log.Println(err)
-				return
-			}
-
-			raw, err := json.Marshal(envInfo)
-			if err != nil {
-				log.Println(err)
-				return
-			}
-
-			if _, err := w.Write(raw); err != nil {
-				log.Println(err)
-				return
-			}
-		case "POST":
-			log.Println("new POST request")
-
-			raw, err := ioutil.ReadAll(r.Body)
-			if err != nil {
-				log.Println(err)
-				return
-			}
-
-			var envInfo message.EnvironmentInfo
-			if err := json.Unmarshal(raw, &envInfo); err != nil {
-				log.Println(err)
-				return
-			}
-
-			log.Println(envInfo)
-
-			if err := db.PutEnvironmentInfoRecord(&envInfo); err != nil {
-				log.Println(err)
-				return
-			}
-		}
-	})
+	http.HandleFunc(common.PutEnvironmentInfoEndpoint, environmentInfoEndpoint)
 
 	http.HandleFunc(common.PutHumanHeartInfoEndpoint, func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
