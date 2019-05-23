@@ -82,7 +82,11 @@ func GetEnv() []*message.EnvironmentInfo {
 }
 
 func Env() {
-	raw, err := json.Marshal(DefaultEnvInfo)
+	ExtendedEnv(&DefaultEnvInfo)
+}
+
+func ExtendedEnv(envInfo *message.EnvironmentInfo) {
+	raw, err := json.Marshal(envInfo)
 	if err != nil {
 		log.Fatal(err)
 	}
