@@ -1,9 +1,9 @@
 package main
 
 import (
-	"encoding/binary"
 	"encoding/json"
 	"fmt"
+	"github.com/es-sandbox/hs3/bolt_db/storage"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -23,7 +23,7 @@ func main() {
 	}
 	defer boltDb.Close()
 
-	db := newDb(boltDb)
+	db := storage.New(boltDb)
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if _, err := fmt.Fprintf(w, "Welcome to my website!"); err != nil {
@@ -37,7 +37,7 @@ func main() {
 		case "GET":
 			log.Println("new GET request")
 
-			envInfo, err := db.getAllEnvironmentInfoRecords()
+			envInfo, err := db.GetAllEnvironmentInfoRecords()
 			if err != nil {
 				log.Println(err)
 				return
@@ -70,7 +70,7 @@ func main() {
 
 			log.Println(envInfo)
 
-			if err := db.putEnvironmentInfoRecord(&envInfo); err != nil {
+			if err := db.PutEnvironmentInfoRecord(&envInfo); err != nil {
 				log.Println(err)
 				return
 			}
@@ -82,7 +82,7 @@ func main() {
 		case "GET":
 			log.Println("new GET request")
 
-			hhInfo, err := db.getAllHumanHeartInfoRecords()
+			hhInfo, err := db.GetAllHumanHeartInfoRecords()
 			if err != nil {
 				log.Println(err)
 				return
@@ -115,7 +115,7 @@ func main() {
 
 			log.Println(humanHeartInfo)
 
-			if err := db.putHumanHeartInfo(&humanHeartInfo); err != nil {
+			if err := db.PutHumanHeartInfo(&humanHeartInfo); err != nil {
 				log.Println(err)
 				return
 			}
@@ -127,7 +127,7 @@ func main() {
 		case "GET":
 			log.Println("new GET request")
 
-			hhInfo, err := db.getAllHumanCommonInfoRecords()
+			hhInfo, err := db.GetAllHumanCommonInfoRecords()
 			if err != nil {
 				log.Println(err)
 				return
@@ -160,7 +160,7 @@ func main() {
 
 			log.Println(hcInfo)
 
-			if err := db.putHumanCommonInfo(&hcInfo); err != nil {
+			if err := db.PutHumanCommonInfo(&hcInfo); err != nil {
 				log.Println(err)
 				return
 			}
@@ -172,7 +172,7 @@ func main() {
 		case "GET":
 			log.Println("new GET request")
 
-			fpInfo, err := db.getAllFlowerpotInfoRecords()
+			fpInfo, err := db.GetAllFlowerpotInfoRecords()
 			if err != nil {
 				log.Println(err)
 				return
@@ -205,7 +205,7 @@ func main() {
 
 			log.Println(flowerpotInfo)
 
-			if err := db.putFlowerpotInfo(&flowerpotInfo); err != nil {
+			if err := db.PutFlowerpotInfo(&flowerpotInfo); err != nil {
 				log.Println(err)
 				return
 			}
@@ -217,7 +217,7 @@ func main() {
 		case "GET":
 			log.Println("new GET request")
 
-			fpInfo, err := db.getRobotMode()
+			fpInfo, err := db.GetRobotMode()
 			if err != nil {
 				log.Println(err)
 				return
@@ -250,7 +250,7 @@ func main() {
 
 			log.Println(mode)
 
-			if err := db.putRobotMode(&mode); err != nil {
+			if err := db.PutRobotMode(&mode); err != nil {
 				log.Println(err)
 				return
 			}
@@ -262,7 +262,7 @@ func main() {
 	http.HandleFunc(common.GetLastEnvironmentInfoEndpoint, func(w http.ResponseWriter, r *http.Request) {
 		log.Println("new GET request")
 
-		envInfo, err := db.getEnvironmentInfoRecord()
+		envInfo, err := db.GetEnvironmentInfoRecord()
 		if err != nil {
 			log.Println(err)
 			return
@@ -283,7 +283,7 @@ func main() {
 	http.HandleFunc(common.GetLastHumanHeartInfoEndpoint, func(w http.ResponseWriter, r *http.Request) {
 		log.Println("new GET request")
 
-		hhInfo, err := db.getHumanHeartInfoRecord()
+		hhInfo, err := db.GetHumanHeartInfoRecord()
 		if err != nil {
 			log.Println(err)
 			return
@@ -304,7 +304,7 @@ func main() {
 	http.HandleFunc(common.GetLastHumanCommonInfoEndpoint, func(w http.ResponseWriter, r *http.Request) {
 		log.Println("new GET request")
 
-		hcInfo, err := db.getHumanCommonInfoRecord()
+		hcInfo, err := db.GetHumanCommonInfoRecord()
 		if err != nil {
 			log.Println(err)
 			return
@@ -325,7 +325,7 @@ func main() {
 	http.HandleFunc(common.GetLastFlowerpotInfoEndpoint, func(w http.ResponseWriter, r *http.Request) {
 		log.Println("new GET request")
 
-		flowerpotInfo, err := db.getFlowerpotInfoRecord()
+		flowerpotInfo, err := db.GetFlowerpotInfoRecord()
 		if err != nil {
 			log.Println(err)
 			return
@@ -355,11 +355,4 @@ func main() {
 	if err := http.ListenAndServe(httpAddr, nil); err != nil {
 		log.Fatalf("failed to serve: %v\n", err)
 	}
-}
-
-// itob returns an 8-byte big endian representation of v.
-func itob(v uint64) []byte {
-	b := make([]byte, 8)
-	binary.BigEndian.PutUint64(b, uint64(v))
-	return b
 }
