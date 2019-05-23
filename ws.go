@@ -125,6 +125,12 @@ func controller(w http.ResponseWriter, r *http.Request) {
 			}
 		case event := <-chanRobotStatusEvents:
 			log.Printf("WRITE TO ANDROID %v", event)
+			logrus.WithFields(logrus.Fields{
+				subsystem:    WS,
+				Source:       AndroidSource,
+				Direction:    Write,
+				"additional": "robot status event",
+			}).Info(event)
 			if err := c.WriteMessage(websocket.TextMessage, []byte(event)); err != nil {
 				log.Println("write:", err)
 				return
