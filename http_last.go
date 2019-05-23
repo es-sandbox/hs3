@@ -41,7 +41,13 @@ func lastEnvironmentInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 }
 
 func lastHumanHeartInfoEndpoint(w http.ResponseWriter, r *http.Request) {
-	log.Println("new GET request")
+	//log.Println("new GET request")
+	logrus.WithFields(logrus.Fields{
+		subsystem:    HTTP,
+		requestType:  GET,
+		eventType:    humanHeartInfoEvent,
+		"additional": "last",
+	}).Info("new request")
 
 	hhInfo, err := db.GetHumanHeartInfoRecord()
 	if err != nil {
@@ -55,6 +61,12 @@ func lastHumanHeartInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	logrus.WithFields(logrus.Fields{
+		subsystem:   HTTP,
+		eventType:   humanHeartInfoEvent,
+		messageType: RAW,
+	}).Infof("try to send: %v", raw)
+
 	if _, err := w.Write(raw); err != nil {
 		log.Println(err)
 		return
@@ -62,7 +74,13 @@ func lastHumanHeartInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 }
 
 func lastHumanCommonInfoEndpoint(w http.ResponseWriter, r *http.Request) {
-	log.Println("new GET request")
+	//log.Println("new GET request")
+	logrus.WithFields(logrus.Fields{
+		subsystem:    HTTP,
+		requestType:  GET,
+		eventType:    humanCommonInfoEvent,
+		"additional": "last",
+	}).Info("new request")
 
 	hcInfo, err := db.GetHumanCommonInfoRecord()
 	if err != nil {
@@ -76,6 +94,12 @@ func lastHumanCommonInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	logrus.WithFields(logrus.Fields{
+		subsystem:   HTTP,
+		eventType:   humanCommonInfoEvent,
+		messageType: RAW,
+	}).Infof("try to send: %v", raw)
+
 	if _, err := w.Write(raw); err != nil {
 		log.Println(err)
 		return
@@ -83,7 +107,12 @@ func lastHumanCommonInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 }
 
 func lastFlowerpotInfoEndpoint(w http.ResponseWriter, r *http.Request) {
-	log.Println("new GET request")
+	logrus.WithFields(logrus.Fields{
+		subsystem:    HTTP,
+		requestType:  GET,
+		eventType:    flowerpotInfoEvent,
+		"additional": "last",
+	}).Info("new request")
 
 	flowerpotInfo, err := db.GetFlowerpotInfoRecord()
 	if err != nil {
@@ -96,6 +125,12 @@ func lastFlowerpotInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
+
+	logrus.WithFields(logrus.Fields{
+		subsystem:   HTTP,
+		eventType:   flowerpotInfoEvent,
+		messageType: RAW,
+	}).Infof("try to send: %v", raw)
 
 	if _, err := w.Write(raw); err != nil {
 		log.Println(err)
