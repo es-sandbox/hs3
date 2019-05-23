@@ -18,14 +18,27 @@ func TestGetLastEnvironmentInfoEndpoint(t *testing.T) {
 	server := start()
 	defer server.shutdown()
 
+	diffObj := &message.EnvironmentInfo{
+		Id:                 7,
+		EnvironmentTemp:    6,
+		AtmospherePressure: 5,
+		Altitude:           4,
+		Humidity:           3,
+		RobotBatteryLvl:    2,
+		Brightness:         1,
+	}
+	common.ExtendedEnv(diffObj)
+	common.ExtendedEnv(diffObj)
+	common.ExtendedEnv(diffObj)
+	common.ExtendedEnv(diffObj)
 	common.Env()
 	obj := common.GetLastEnv()
 
 	expected := common.DefaultEnvInfo
-	expected.Id = 1
+	expected.Id = 5
+	fmt.Println(obj)
 	assert(compareEnvObjects(obj, &expected), "TestEnvironmentInfoEndpoint: compareEnvObjects")
 }
-
 
 func TestEnvironmentInfoEndpoint(t *testing.T) {
 	removeDBFile()
