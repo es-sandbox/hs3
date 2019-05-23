@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/base64"
 	"encoding/json"
-	"fmt"
 	"github.com/gorilla/websocket"
 	"github.com/sirupsen/logrus"
 	"io/ioutil"
@@ -219,7 +218,12 @@ func controllerSubscription(w http.ResponseWriter, r *http.Request) {
 		_ = mt
 
 		//log.Printf("recv: %s", message)
-		logBigMessage(fmt.Sprintf("recv: %s", message))
+		//logBigMessage(fmt.Sprintf("recv: %s", message))
+		logrus.WithFields(logrus.Fields{
+			subsystem: WS,
+			Source:    RobotSource,
+			Direction: Read,
+		}).Info(cutMessage(string(message)))
 
 		// send raw image to channel only if android is active
 		if atomic.LoadUint32(&controllerStatus) == 1 {
