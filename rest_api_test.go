@@ -40,6 +40,32 @@ func TestGetLastEnvironmentInfoEndpoint(t *testing.T) {
 	assert(compareEnvObjects(obj, &expected), "TestEnvironmentInfoEndpoint: compareEnvObjects")
 }
 
+func TestGetLastHumanHeartInfoEndpoint(t *testing.T) {
+	removeDBFile()
+	server := start()
+	defer server.shutdown()
+
+	diffObj := &message.HumanHeartInfo{
+		Id:               4,
+		HeartRate:        3,
+		HeartRhythm:      2,
+		DeviceBatteryLvl: 1,
+	}
+
+	_ = diffObj
+	//common.ExtendedEnv(diffObj)
+	//common.ExtendedEnv(diffObj)
+	//common.ExtendedEnv(diffObj)
+	//common.ExtendedEnv(diffObj)
+	//common.Env()
+	//obj := common.GetLastEnv()
+	//
+	//expected := common.DefaultEnvInfo
+	//expected.Id = 5
+	//fmt.Println(obj)
+	//assert(compareEnvObjects(obj, &expected), "TestEnvironmentInfoEndpoint: compareEnvObjects")
+}
+
 func TestEnvironmentInfoEndpoint(t *testing.T) {
 	removeDBFile()
 	server := start()
