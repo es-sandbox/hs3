@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"github.com/gorilla/websocket"
 	"io/ioutil"
@@ -164,11 +165,31 @@ func controllerSubscription(w http.ResponseWriter, r *http.Request) {
 
 	go func() {
 		for {
-			msg := <-chanCtrlMsgs
-			err = c.WriteMessage(websocket.TextMessage, []byte(msg))
-			if err != nil {
-				log.Println("write:", err)
-				return
+			select {
+			case msg := <-chanCtrlMsgs:
+				err = c.WriteMessage(websocket.TextMessage, []byte(msg))
+				if err != nil {
+					log.Println("write:", err)
+					return
+				}
+			case mode := <-chanRobotModeСhanges:
+				//{"method":mode, "mode": int }
+				type robotMode struct {
+					Method string
+					Mode   uint8
+				}
+				obj := robotMode{
+					Method: "mode",
+					Mode:   mode,
+				}
+				raw, err := json.Marshal(obj)
+				if err != nil {
+					log.Println(err)
+				}
+				if err := c.WriteMessage(websocket.TextMessage, []byte(raw)); err != nil {
+					log.Println("write:", err)
+					return
+				}
 			}
 		}
 	}()
