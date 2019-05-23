@@ -163,6 +163,23 @@ func PrintHc() {
 	}
 }
 
+func GetLastHc() *message.HumanCommonInfo {
+	url := fmt.Sprintf("http://localhost:%v%v", DefaultHttpPort, GetLastHumanCommonInfoEndpoint)
+	fmt.Println(url)
+	resp, err := http.Get(url)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	raw, err := ioutil.ReadAll(resp.Body)
+
+	var result *message.HumanCommonInfo
+	if err := json.Unmarshal(raw, &result); err != nil {
+		log.Fatal(err)
+	}
+	return result
+}
+
 func GetHc() []*message.HumanCommonInfo {
 	url := fmt.Sprintf("http://localhost:%v%v", DefaultHttpPort, PutHumanCommonInfoEndpoint)
 	fmt.Println(url)
@@ -181,7 +198,11 @@ func GetHc() []*message.HumanCommonInfo {
 }
 
 func Hc() {
-	raw, err := json.Marshal(DefaultHcInfo)
+	ExtendedHc(&DefaultHcInfo)
+}
+
+func ExtendedHc(hcInfo *message.HumanCommonInfo) {
+	raw, err := json.Marshal(hcInfo)
 	if err != nil {
 		log.Fatal(err)
 	}
