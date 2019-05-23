@@ -13,6 +13,20 @@ import (
 	"github.com/es-sandbox/hs3/message"
 )
 
+func TestGetLastEnvironmentInfoEndpoint(t *testing.T) {
+	removeDBFile()
+	server := start()
+	defer server.shutdown()
+
+	common.Env()
+	obj := common.GetLastEnv()
+
+	expected := common.DefaultEnvInfo
+	expected.Id = 1
+	assert(compareEnvObjects(obj, &expected), "TestEnvironmentInfoEndpoint: compareEnvObjects")
+}
+
+
 func TestEnvironmentInfoEndpoint(t *testing.T) {
 	removeDBFile()
 	server := start()

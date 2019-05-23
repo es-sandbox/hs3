@@ -47,6 +47,23 @@ func PrintEnv() {
 	}
 }
 
+func GetLastEnv() *message.EnvironmentInfo {
+	url := fmt.Sprintf("http://localhost:%v%v", DefaultHttpPort, GetLastEnvironmentInfoEndpoint)
+	fmt.Println(url)
+	resp, err := http.Get(url)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	raw, err := ioutil.ReadAll(resp.Body)
+
+	var result *message.EnvironmentInfo
+	if err := json.Unmarshal(raw, &result); err != nil {
+		log.Fatal(err)
+	}
+	return result
+}
+
 func GetEnv() []*message.EnvironmentInfo {
 	url := fmt.Sprintf("http://localhost:%v%v", DefaultHttpPort, PutEnvironmentInfoEndpoint)
 	fmt.Println(url)
