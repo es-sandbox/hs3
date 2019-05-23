@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"github.com/gorilla/websocket"
 	"io/ioutil"
@@ -48,6 +49,8 @@ const (
 )
 
 var chanRobotStatusEvents = make(chan string, 200)
+
+var chanRobotModeСhanges = make(chan uint8, 200)
 
 var (
 	controllerStatus             uint32
@@ -113,6 +116,24 @@ func controller(w http.ResponseWriter, r *http.Request) {
 		case event := <-chanRobotStatusEvents:
 			log.Printf("WRITE TO ANDROID %v", event)
 			if err := c.WriteMessage(websocket.TextMessage, []byte(event)); err != nil {
+				log.Println("write:", err)
+				return
+			}
+		case mode := <-chanRobotModeСhanges:
+			//{"method":mode, "mode": int }
+			type robotMode struct {
+				Method string
+				Mode   uint8
+			}
+			obj := robotMode{
+				Method: "mode",
+				Mode:   mode,
+			}
+			raw, err := json.Marshal(obj)
+			if err != nil {
+				log.Println(err)
+			}
+			if err := c.WriteMessage(websocket.TextMessage, []byte(raw)); err != nil {
 				log.Println("write:", err)
 				return
 			}

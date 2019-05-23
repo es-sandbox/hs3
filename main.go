@@ -254,6 +254,8 @@ func main() {
 				log.Println(err)
 				return
 			}
+
+			chanRobotModeСhanges <- mode.Mode
 		}
 	})
 
