@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+
+	"github.com/sirupsen/logrus"
 )
 
 func environmentInfoEndpoint(w http.ResponseWriter, r *http.Request) {
@@ -38,7 +40,11 @@ func environmentInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		log.Println("RAW", raw)
+		logrus.WithFields(logrus.Fields{
+			"subsystem": "HTTP",
+			"event_type": "environment_info",
+			"message_type": "RAW",
+		}).Info(string(raw))
 
 		var envInfo message.EnvironmentInfo
 		if err := json.Unmarshal(raw, &envInfo); err != nil {
@@ -46,7 +52,11 @@ func environmentInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		log.Println("PARSED", envInfo)
+		logrus.WithFields(logrus.Fields{
+			"subsystem": "HTTP",
+			"event_type": "environment_info",
+			"message_type": "PARSED",
+		}).Info(envInfo)
 
 		if err := db.PutEnvironmentInfoRecord(&envInfo); err != nil {
 			log.Println(err)
