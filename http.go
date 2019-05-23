@@ -23,8 +23,9 @@ const (
 	RAW    = "RAW"
 	PARSED = "PARSED"
 
-	environmentInfo = "environment_info"
+	environmentInfo      = "environment_info"
 	humanHeartInfoEvent  = "human_heart_info"
+	humanCommonInfoEvent = "human_common_info"
 )
 
 func environmentInfoEndpoint(w http.ResponseWriter, r *http.Request) {
@@ -156,7 +157,11 @@ func humanHeartInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 func humanCommonInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-		log.Println("new GET request")
+		logrus.WithFields(logrus.Fields{
+			subsystem:   HTTP,
+			requestType: GET,
+			eventType:   humanCommonInfoEvent,
+		}).Info("new request")
 
 		hhInfo, err := db.GetAllHumanCommonInfoRecords()
 		if err != nil {
@@ -175,7 +180,11 @@ func humanCommonInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	case "POST":
-		log.Println("new POST request")
+		logrus.WithFields(logrus.Fields{
+			subsystem:   HTTP,
+			requestType: POST,
+			eventType:   humanCommonInfoEvent,
+		}).Info("new request")
 
 		raw, err := ioutil.ReadAll(r.Body)
 		if err != nil {
@@ -183,7 +192,11 @@ func humanCommonInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		log.Println("RAW", raw)
+		logrus.WithFields(logrus.Fields{
+			subsystem:   HTTP,
+			eventType:   humanCommonInfoEvent,
+			messageType: RAW,
+		}).Info(string(raw))
 
 		var hcInfo message.HumanCommonInfo
 		if err := json.Unmarshal(raw, &hcInfo); err != nil {
@@ -191,7 +204,11 @@ func humanCommonInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		log.Println("PARSED", hcInfo)
+		logrus.WithFields(logrus.Fields{
+			subsystem:   HTTP,
+			eventType:   humanCommonInfoEvent,
+			messageType: PARSED,
+		}).Info(hcInfo)
 
 		if err := db.PutHumanCommonInfo(&hcInfo); err != nil {
 			log.Println(err)
