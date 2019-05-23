@@ -52,12 +52,11 @@ func TestGetLastHumanHeartInfoEndpoint(t *testing.T) {
 		DeviceBatteryLvl: 1,
 	}
 
-	_ = diffObj
-	//common.ExtendedEnv(diffObj)
-	//common.ExtendedEnv(diffObj)
-	//common.ExtendedEnv(diffObj)
-	//common.ExtendedEnv(diffObj)
-	//common.Env()
+	common.ExtendedHh(diffObj)
+	common.ExtendedHh(diffObj)
+	common.ExtendedHh(diffObj)
+	common.ExtendedHh(diffObj)
+	common.Hh()
 	//obj := common.GetLastEnv()
 	//
 	//expected := common.DefaultEnvInfo

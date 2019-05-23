@@ -124,7 +124,11 @@ func GetHh() []*message.HumanHeartInfo {
 }
 
 func Hh() {
-	raw, err := json.Marshal(DefaultHumanHeartInfo)
+	ExtendedHh(&DefaultHumanHeartInfo)
+}
+
+func ExtendedHh(hhInfo *message.HumanHeartInfo) {
+	raw, err := json.Marshal(hhInfo)
 	if err != nil {
 		log.Fatal(err)
 	}
