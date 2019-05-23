@@ -32,7 +32,7 @@ func lastEnvironmentInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 		subsystem:   HTTP,
 		eventType:   environmentInfo,
 		messageType: RAW,
-	}).Infof("try to send: %v", raw)
+	}).Infof("try to send: %v", string(raw))
 
 	if _, err := w.Write(raw); err != nil {
 		log.Println(err)
@@ -65,7 +65,7 @@ func lastHumanHeartInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 		subsystem:   HTTP,
 		eventType:   humanHeartInfoEvent,
 		messageType: RAW,
-	}).Infof("try to send: %v", raw)
+	}).Infof("try to send: %v", string(raw))
 
 	if _, err := w.Write(raw); err != nil {
 		log.Println(err)
@@ -98,7 +98,7 @@ func lastHumanCommonInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 		subsystem:   HTTP,
 		eventType:   humanCommonInfoEvent,
 		messageType: RAW,
-	}).Infof("try to send: %v", raw)
+	}).Infof("try to send: %v", string(raw))
 
 	if _, err := w.Write(raw); err != nil {
 		log.Println(err)
@@ -130,7 +130,7 @@ func lastFlowerpotInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 		subsystem:   HTTP,
 		eventType:   flowerpotInfoEvent,
 		messageType: RAW,
-	}).Infof("try to send: %v", raw)
+	}).Infof("try to send: %v", string(raw))
 
 	if _, err := w.Write(raw); err != nil {
 		log.Println(err)
