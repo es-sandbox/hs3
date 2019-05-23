@@ -280,6 +280,27 @@ func main() {
 		}
 	})
 
+	http.HandleFunc(common.GetLastHumanHeartInfoEndpoint, func(w http.ResponseWriter, r *http.Request) {
+		log.Println("new GET request")
+
+		hhInfo, err := db.getHumanHeartInfoRecord()
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		raw, err := json.Marshal(hhInfo)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		if _, err := w.Write(raw); err != nil {
+			log.Println(err)
+			return
+		}
+	})
+
 	http.HandleFunc(common.WebsocketEchoEndpoint, echo)
 	http.HandleFunc(common.WebsocketControllerEndpoint, controller)
 	http.HandleFunc(common.WebsocketControllerSubscriptionEndpoint, controllerSubscription)

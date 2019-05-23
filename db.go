@@ -254,3 +254,26 @@ func (db *db) getEnvironmentInfoRecord() (*message.EnvironmentInfo, error) {
 	}
 	return msg, nil
 }
+
+func (db *db) getHumanHeartInfoRecord() (*message.HumanHeartInfo, error) {
+	var msg *message.HumanHeartInfo
+	err := db.boltDb.View(func(tx *bolt.Tx) error {
+		bucket := tx.Bucket(humanHeartInfoBucketName)
+		if bucket == nil {
+			return nil
+		}
+
+		key, value := bucket.Cursor().Last()
+		if key == nil || value == nil {
+			return nil
+		}
+
+		var err error
+		msg, err = message.NewHumanHeartInfoFromBytes(value)
+		return err
+	})
+	if err != nil {
+		return nil, err
+	}
+	return msg, nil
+}
