@@ -54,3 +54,50 @@ func environmentInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
+
+func humanHeartInfoEndpoint(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "GET":
+		log.Println("new GET request")
+
+		hhInfo, err := db.GetAllHumanHeartInfoRecords()
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		raw, err := json.Marshal(hhInfo)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		if _, err := w.Write(raw); err != nil {
+			log.Println(err)
+			return
+		}
+	case "POST":
+		log.Println("new POST request")
+
+		raw, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		log.Println("RAW", raw)
+
+		var humanHeartInfo message.HumanHeartInfo
+		if err := json.Unmarshal(raw, &humanHeartInfo); err != nil {
+			log.Println(err)
+			return
+		}
+
+		log.Println("PARSED", humanHeartInfo)
+
+		if err := db.PutHumanHeartInfo(&humanHeartInfo); err != nil {
+			log.Println(err)
+			return
+		}
+	}
+}
