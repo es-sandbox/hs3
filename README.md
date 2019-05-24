@@ -33,6 +33,13 @@ type FlowerpotInfo struct {
 type RobotMode struct {
 	Mode uint8
 }
+
+type Head struct {
+	Movement       bool    `json:"movement"`
+	Ambient        uint32  `json:"ambient"`
+	Temperature    float32 `json:"temperature"`
+	AltitudeMeters float32 `json:"altitude_meters"`
+}
 ```
 	
 ## HTTP calls
@@ -42,11 +49,13 @@ Get/Post /api/v1/human/heart
 Get/Post /api/v1/human/common
 Get/Post /api/v1/flowerpot
 Get/Post /api/v1/robot/mode
+POST     /api/v1/head
 
 GET /api/v1/environment/last
 GET /api/v1/human/heart/last
 GET /api/v1/human/common/last
 GET /api/v1/flowerpot/last
+Get /api/v1/head/last
 ```
 
 ## Websocket calls
