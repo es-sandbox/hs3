@@ -37,11 +37,13 @@ func main() {
 	http.HandleFunc(common.PutHumanCommonInfoEndpoint, humanCommonInfoEndpoint)
 	http.HandleFunc(common.PutFlowerpotInfoEndpoint, flowerpotInfoEndpoint)
 	http.HandleFunc(common.PutRobotModeEndpoint, robotModeEndpoint)
+	http.HandleFunc(common.PutHeadEndpoint, headInfoEndpoint)
 
 	http.HandleFunc(common.GetLastEnvironmentInfoEndpoint, lastEnvironmentInfoEndpoint)
 	http.HandleFunc(common.GetLastHumanHeartInfoEndpoint, lastHumanHeartInfoEndpoint)
 	http.HandleFunc(common.GetLastHumanCommonInfoEndpoint, lastHumanCommonInfoEndpoint)
 	http.HandleFunc(common.GetLastFlowerpotInfoEndpoint, lastFlowerpotInfoEndpoint)
+	http.HandleFunc(common.GetLastHeadInfoEndpoint, lastHeadInfoEndpoint)
 
 	http.HandleFunc(common.WebsocketEchoEndpoint, echo)
 	http.HandleFunc(common.WebsocketControllerEndpoint, controller)

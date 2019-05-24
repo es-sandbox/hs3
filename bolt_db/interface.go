@@ -15,6 +15,7 @@ type get interface {
 	GetHumanCommonInfoRecord() (*message.HumanCommonInfo, error)
 	GetFlowerpotInfoRecord() (*message.FlowerpotInfo, error)
 	GetRobotMode() (*message.RobotMode, error)
+	GetHeadInfoRecord() (*message.Head, error)
 }
 
 type put interface {
@@ -23,6 +24,7 @@ type put interface {
 	PutHumanCommonInfo(hcInfo *message.HumanCommonInfo) error
 	PutFlowerpotInfo(flowerpotInfo *message.FlowerpotInfo) error
 	PutRobotMode(mode *message.RobotMode) error
+	PutHeadInfoRecord(head *message.Head) error
 }
 
 type Store interface {
