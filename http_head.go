@@ -18,6 +18,29 @@ import (
 
 func headInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
+	case "GET":
+		logrus.WithFields(logrus.Fields{
+			subsystem:   HTTP,
+			requestType: GET,
+			eventType:   headInfoEvent,
+		}).Info("new request")
+
+		head, err := db.GetAllHeadInfoRecords()
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		raw, err := json.Marshal(head)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		if _, err := w.Write(raw); err != nil {
+			log.Println(err)
+			return
+		}
 	case "POST":
 		logrus.WithFields(logrus.Fields{
 			subsystem:   HTTP,
