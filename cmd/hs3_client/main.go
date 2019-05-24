@@ -267,20 +267,35 @@ func chartFunc() {
 		yValues = append(yValues, float64(head.Temperature))
 	}
 
-	fmt.Println(len(xValues), len(yValues))
-	for _, x := range xValues {
-		fmt.Print(x)
-	}
-	fmt.Println()
-
-	for _, y := range yValues {
-		fmt.Print(y)
-	}
-	fmt.Println()
+	//fmt.Println(len(xValues), len(yValues))
+	//for _, x := range xValues {
+	//	fmt.Print(x)
+	//}
+	//fmt.Println()
+	//
+	//for _, y := range yValues {
+	//	fmt.Print(y)
+	//}
+	//fmt.Println()
 
 	graph := chart.Chart{
+		XAxis: chart.XAxis{
+			Name:      "Time",
+			NameStyle: chart.StyleShow(),
+			Style:     chart.StyleShow(),
+		},
+		YAxis: chart.YAxis{
+			Name:      "Temperature",
+			NameStyle: chart.StyleShow(),
+			Style:     chart.StyleShow(),
+		},
 		Series: []chart.Series{
 			chart.ContinuousSeries{
+				Style: chart.Style{
+					Show:        true,
+					StrokeColor: chart.GetDefaultColor(0).WithAlpha(64),
+					FillColor:   chart.GetDefaultColor(0).WithAlpha(64),
+				},
 				XValues: xValues,
 				YValues: yValues,
 			},
@@ -297,7 +312,7 @@ func chartFunc() {
 		log.Fatal(err)
 	}
 
-	if err := ioutil.WriteFile("chart.png", raw, 0666); err != nil {
+	if err := ioutil.WriteFile("images/chart.png", raw, 0666); err != nil {
 		log.Fatal(err)
 	}
 
