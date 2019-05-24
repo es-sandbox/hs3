@@ -208,7 +208,7 @@ func wsControllerSubscription() {
 }
 
 func wsSendRawImage() {
-	host := fmt.Sprintf("localhost:%v", common.DefaultHttpPort)
+	host := fmt.Sprintf("35.159.53.201:%v", common.DefaultHttpPort)
 	u := url.URL{
 		Scheme: "ws",
 		Host:   host,

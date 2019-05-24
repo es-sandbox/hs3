@@ -241,8 +241,18 @@ func controllerSubscription(w http.ResponseWriter, r *http.Request) {
 			continue
 		}
 
+		//{"method": "image", "data": "/9j/4AAQSkZJRgABAQAAA
+		type jsonImage struct {
+			Method string `json:"method"`
+			Data   string `json:"data"`
+		}
+		var obj jsonImage
+		if err := json.Unmarshal(message, &obj); err != nil {
+			continue
+		}
+
 		// save images in server's filesystem always (even android is inactive)
-		rawImage, err := base64.StdEncoding.DecodeString(string(message))
+		rawImage, err := base64.StdEncoding.DecodeString(obj.Data)
 		if err != nil {
 			log.Println(err)
 			continue
