@@ -14,6 +14,7 @@ const (
 	GetLastHumanHeartInfoEndpoint  = "/api/v1/human/heart/last"
 	GetLastHumanCommonInfoEndpoint = "/api/v1/human/common/last"
 	GetLastFlowerpotInfoEndpoint   = "/api/v1/flowerpot/last"
+	GetLastHeadInfoEndpoint   = "/api/v1/head/last"
 
 	WebsocketEchoEndpoint                   = "/echo"
 	WebsocketControllerEndpoint             = "/controller"

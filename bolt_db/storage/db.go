@@ -240,6 +240,29 @@ func (db *storage) GetRobotMode() (*message.RobotMode, error) {
 	return mode, nil
 }
 
+func (db *storage) GetHeadInfoRecord() (*message.Head, error) {
+	var msg *message.Head
+	err := db.boltDb.View(func(tx *bolt.Tx) error {
+		bucket := tx.Bucket(headInfoBucketName)
+		if bucket == nil {
+			return nil
+		}
+
+		key, value := bucket.Cursor().Last()
+		if key == nil || value == nil {
+			return nil
+		}
+
+		var err error
+		msg, err = message.NewHeadFromBytes(value)
+		return err
+	})
+	if err != nil {
+		return nil, err
+	}
+	return msg, nil
+}
+
 // -------------------------------------------------------------------------
 
 // ------------------------------ PUT ALL METHODS ------------------------------

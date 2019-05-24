@@ -129,3 +129,11 @@ type Head struct {
 func (head *Head) Encode() ([]byte, error) {
 	return json.Marshal(head)
 }
+
+func NewHeadFromBytes(bytes []byte) (*Head, error) {
+	var head Head
+	if err := json.Unmarshal(bytes, &head); err != nil {
+		return nil, err
+	}
+	return &head, nil
+}

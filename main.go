@@ -43,6 +43,7 @@ func main() {
 	http.HandleFunc(common.GetLastHumanHeartInfoEndpoint, lastHumanHeartInfoEndpoint)
 	http.HandleFunc(common.GetLastHumanCommonInfoEndpoint, lastHumanCommonInfoEndpoint)
 	http.HandleFunc(common.GetLastFlowerpotInfoEndpoint, lastFlowerpotInfoEndpoint)
+	http.HandleFunc(common.GetLastHeadInfoEndpoint, lastHeadInfoEndpoint)
 
 	http.HandleFunc(common.WebsocketEchoEndpoint, echo)
 	http.HandleFunc(common.WebsocketControllerEndpoint, controller)
