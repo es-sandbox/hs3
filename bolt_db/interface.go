@@ -7,6 +7,7 @@ type getAll interface {
 	GetAllHumanHeartInfoRecords() ([]*message.HumanHeartInfo, error)
 	GetAllHumanCommonInfoRecords() ([]*message.HumanCommonInfo, error)
 	GetAllFlowerpotInfoRecords() ([]*message.FlowerpotInfo, error)
+	GetAllHeadInfoRecords() ([]*message.Head, error)
 }
 
 type get interface {

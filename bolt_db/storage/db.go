@@ -123,6 +123,29 @@ func (db *storage) GetAllFlowerpotInfoRecords() ([]*message.FlowerpotInfo, error
 	return msgs, nil
 }
 
+func (db *storage) GetAllHeadInfoRecords() ([]*message.Head, error) {
+	msgs := make([]*message.Head, 0)
+	err := db.boltDb.View(func(tx *bolt.Tx) error {
+		bucket := tx.Bucket(headInfoBucketName)
+		if bucket == nil {
+			return nil
+		}
+
+		return bucket.ForEach(func(key, value []byte) error {
+			head, err := message.NewHeadFromBytes(value)
+			if err != nil {
+				return err
+			}
+			msgs = append(msgs, head)
+			return nil
+		})
+	})
+	if err != nil {
+		return nil, err
+	}
+	return msgs, nil
+}
+
 // -----------------------------------------------------------------------------
 
 // ------------------------------ GET METHODS ------------------------------
