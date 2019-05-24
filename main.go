@@ -37,6 +37,7 @@ func main() {
 	http.HandleFunc(common.PutHumanCommonInfoEndpoint, humanCommonInfoEndpoint)
 	http.HandleFunc(common.PutFlowerpotInfoEndpoint, flowerpotInfoEndpoint)
 	http.HandleFunc(common.PutRobotModeEndpoint, robotModeEndpoint)
+	http.HandleFunc(common.PutHeadEndpoint, headInfoEndpoint)
 
 	http.HandleFunc(common.GetLastEnvironmentInfoEndpoint, lastEnvironmentInfoEndpoint)
 	http.HandleFunc(common.GetLastHumanHeartInfoEndpoint, lastHumanHeartInfoEndpoint)

@@ -48,10 +48,10 @@ func headInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 			eventType:   headInfoEvent,
 			messageType: PARSED,
 		}).Info(head)
-		//
-		//if err := db.PutEnvironmentInfoRecord(&envInfo); err != nil {
-		//	log.Println(err)
-		//	return
-		//}
+
+		if err := db.PutHeadInfoRecord(&head); err != nil {
+			log.Println(err)
+			return
+		}
 	}
 }

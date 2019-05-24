@@ -8,6 +8,7 @@ const (
 	PutHumanCommonInfoEndpoint = "/api/v1/human/common"
 	PutFlowerpotInfoEndpoint   = "/api/v1/flowerpot"
 	PutRobotModeEndpoint       = "/api/v1/robot/mode"
+	PutHeadEndpoint            = "/api/v1/head"
 
 	GetLastEnvironmentInfoEndpoint = "/api/v1/environment/last"
 	GetLastHumanHeartInfoEndpoint  = "/api/v1/human/heart/last"
