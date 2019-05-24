@@ -137,3 +137,35 @@ func lastFlowerpotInfoEndpoint(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+func lastHeadInfoEndpoint(w http.ResponseWriter, r *http.Request) {
+	logrus.WithFields(logrus.Fields{
+		subsystem:    HTTP,
+		requestType:  GET,
+		eventType:    headInfoEvent,
+		"additional": "last",
+	}).Info("new request")
+	//
+	//envInfo, err := db.GetEnvironmentInfoRecord()
+	//if err != nil {
+	//	log.Println(err)
+	//	return
+	//}
+	//
+	//raw, err := json.Marshal(envInfo)
+	//if err != nil {
+	//	log.Println(err)
+	//	return
+	//}
+	//
+	//logrus.WithFields(logrus.Fields{
+	//	subsystem:   HTTP,
+	//	eventType:   environmentInfo,
+	//	messageType: RAW,
+	//}).Infof("try to send: %v", string(raw))
+	//
+	//if _, err := w.Write(raw); err != nil {
+	//	log.Println(err)
+	//	return
+	//}
+}
