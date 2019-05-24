@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/base64"
 	"flag"
 	"fmt"
@@ -10,6 +11,7 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
+	"github.com/wcharczuk/go-chart" //exposes "chart"
 
 	"github.com/es-sandbox/hs3/common"
 )
@@ -32,6 +34,8 @@ func main() {
 	wsControllerSubscriptionFlag := flag.Bool("ws_ctrl_sub", false, "")
 
 	wsSendRawImageFlag := flag.Bool("ws_send_raw_image", false, "")
+
+	chartFlag := flag.Bool("chart", false, "")
 
 	flag.Parse()
 
@@ -89,6 +93,10 @@ func main() {
 
 	if *wsSendRawImageFlag {
 		wsSendRawImage()
+	}
+
+	if *chartFlag {
+		chartFunc()
 	}
 }
 
@@ -239,4 +247,55 @@ func wsSendRawImage() {
 
 		time.Sleep(time.Second * 5)
 	}
+}
+
+func chartFunc() {
+	envs := common.GetEnv()
+	fmt.Println(envs)
+
+	lenEnvs := len(envs)
+	xValues := make([]float64, 0, lenEnvs)
+	for i := 1; i <= lenEnvs; i++ {
+		xValues = append(xValues, float64(i))
+	}
+	yValues := make([]float64, 0, lenEnvs)
+	for _, env := range envs {
+		yValues = append(yValues, float64(env.EnvironmentTemp))
+	}
+
+	fmt.Println(len(xValues), len(yValues))
+	for x := range xValues {
+		fmt.Print(x)
+	}
+	fmt.Println()
+
+	for y := range yValues {
+		fmt.Print(y)
+	}
+	fmt.Println()
+
+	graph := chart.Chart{
+		Series: []chart.Series{
+			chart.ContinuousSeries{
+				XValues: xValues,
+				YValues: yValues,
+			},
+		},
+	}
+
+	buffer := bytes.NewBuffer([]byte{})
+	if err := graph.Render(chart.PNG, buffer); err != nil {
+		log.Fatal(err)
+	}
+
+	raw, err := ioutil.ReadAll(buffer)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if err := ioutil.WriteFile("chart.png", raw, 0666); err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("OK")
 }
