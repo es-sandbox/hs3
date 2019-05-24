@@ -111,3 +111,21 @@ type ManipulatorMovement struct {
 	Rotation int16
 	Touch    bool
 }
+
+//message Head {
+//bool movement = 1;
+//uint32 ambient = 2;
+//float temperature = 3;
+//float altitude_meters = 4;
+//}
+type Head struct {
+	Id             uint64  `json:"id"`
+	Movement       bool    `json:"movement"`
+	Ambient        uint32  `json:"ambient"`
+	Temperature    float32 `json:"temperature"`
+	AltitudeMeters float32 `json:"altitude_meters"`
+}
+
+func (head *Head) Encode() ([]byte, error) {
+	return json.Marshal(head)
+}

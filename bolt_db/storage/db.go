@@ -14,6 +14,7 @@ var (
 	humanCommonInfoBucketName = []byte("human/common")
 	flowerpotInfoBucketName   = []byte("flowerpot")
 	metaInfoBucketName        = []byte("meta")
+	headInfoBucketName        = []byte("head")
 
 	robotModeKey = []byte("mode")
 )
@@ -332,6 +333,25 @@ func (db *storage) PutRobotMode(mode *message.RobotMode) error {
 		}
 
 		return bucket.Put(robotModeKey, rawToDatabase)
+	})
+}
+
+func (db *storage) PutHeadInfoRecord(head *message.Head) error {
+	return db.boltDb.Update(func(tx *bolt.Tx) error {
+		bucket, err := tx.CreateBucketIfNotExists(headInfoBucketName)
+		if err != nil {
+			return err
+		}
+
+		id, _ := bucket.NextSequence()
+		head.Id = id
+
+		rawToDatabase, err := head.Encode()
+		if err != nil {
+			return err
+		}
+
+		return bucket.Put(itob(head.Id), rawToDatabase)
 	})
 }
 

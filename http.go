@@ -28,6 +28,7 @@ const (
 	humanCommonInfoEvent = "human_common_info"
 	flowerpotInfoEvent   = "flowerpot_info"
 	robotModeEvent       = "robot_mode"
+	headInfoEvent        = "head_info"
 
 	WS = "WS"
 

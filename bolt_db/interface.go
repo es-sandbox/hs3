@@ -23,6 +23,7 @@ type put interface {
 	PutHumanCommonInfo(hcInfo *message.HumanCommonInfo) error
 	PutFlowerpotInfo(flowerpotInfo *message.FlowerpotInfo) error
 	PutRobotMode(mode *message.RobotMode) error
+	PutHeadInfoRecord(head *message.Head) error
 }
 
 type Store interface {
