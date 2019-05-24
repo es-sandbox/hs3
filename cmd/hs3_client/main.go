@@ -250,6 +250,10 @@ func wsSendRawImage() {
 }
 
 func chartFunc() {
+	env := common.DefaultEnvInfo
+	env.EnvironmentTemp = 3
+	common.ExtendedEnv(&env)
+
 	envs := common.GetEnv()
 	fmt.Println(envs)
 
@@ -264,12 +268,12 @@ func chartFunc() {
 	}
 
 	fmt.Println(len(xValues), len(yValues))
-	for x := range xValues {
+	for _, x := range xValues {
 		fmt.Print(x)
 	}
 	fmt.Println()
 
-	for y := range yValues {
+	for _, y := range yValues {
 		fmt.Print(y)
 	}
 	fmt.Println()
