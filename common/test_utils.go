@@ -309,3 +309,20 @@ func Mode() {
 		log.Fatal(err)
 	}
 }
+
+func GetHead() []*message.Head {
+	url := fmt.Sprintf("http://35.159.53.201:%v%v", DefaultHttpPort, PutHeadEndpoint)
+	fmt.Println(url)
+	resp, err := http.Get(url)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	raw, err := ioutil.ReadAll(resp.Body)
+
+	var result []*message.Head
+	if err := json.Unmarshal(raw, &result); err != nil {
+		log.Fatal(err)
+	}
+	return result
+}

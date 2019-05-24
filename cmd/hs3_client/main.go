@@ -250,21 +250,21 @@ func wsSendRawImage() {
 }
 
 func chartFunc() {
-	env := common.DefaultEnvInfo
-	env.EnvironmentTemp = 3
-	common.ExtendedEnv(&env)
+	//env := common.DefaultEnvInfo
+	//env.EnvironmentTemp = 3
+	//common.ExtendedEnv(&env)
 
-	envs := common.GetEnv()
-	fmt.Println(envs)
+	heads := common.GetHead()
+	//fmt.Println(envs)
 
-	lenEnvs := len(envs)
+	lenEnvs := len(heads)
 	xValues := make([]float64, 0, lenEnvs)
 	for i := 1; i <= lenEnvs; i++ {
 		xValues = append(xValues, float64(i))
 	}
 	yValues := make([]float64, 0, lenEnvs)
-	for _, env := range envs {
-		yValues = append(yValues, float64(env.EnvironmentTemp))
+	for _, head := range heads {
+		yValues = append(yValues, float64(head.Temperature))
 	}
 
 	fmt.Println(len(xValues), len(yValues))
